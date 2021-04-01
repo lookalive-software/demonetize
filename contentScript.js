@@ -12,14 +12,24 @@ let queue = new Array
 //     this.
 
 // }
-function mutateFeedPost(node){
-        let price = node.querySelector(".feed-post__coin-price-holder")
-        let int = parseInt(price.innerText.replace(',','').match(/\d+/))
-        let exp = parseInt(Math.log10(int))
-        price.innerText = "".padStart(exp, "$") // replace according to current settings, maybe an emoji or whathaveyou
+function mutatePrice(priceHolder){
+    let int = parseInt(priceHolder.innerText.replace(',','').match(/\d+/))
+    let exp = parseInt(Math.log10(int))
+    priceHolder.innerText = " ".padStart(exp + 1, "$") // replace according to current settings, maybe an emoji or whathaveyou
 }
 
-console.log(String(document.body))
+function mutateFeedPost(node){
+    mutatePrice(node.querySelector(".feed-post__coin-price-holder"))
+}
+function hideMarketCap(node){
+    node.firstElementChild.lastElementChild.style.display = 'none'
+}
+function mutateProfilePrice(node){
+    mutatePrice(
+        node.firstElementChild.children[3].lastElementChild.lastElementChild.firstElementChild
+    )
+}
+
 // It seems on navigate I unload and reload a new app-root, so to catch this I need an observer on the body
 // on page change, well see how it looks on change...
 new MutationObserver((mutationsList, observer) => {
@@ -27,6 +37,8 @@ new MutationObserver((mutationsList, observer) => {
         console.log(mutation.addedNodes)
         Array.from(mutation.addedNodes).map(node => {
             if(/js-feed-post/.test(node.className)){ mutateFeedPost(node) }
+            if(/creator-profile-top-card/i.test(node.tagName)){ hideMarketCap(node), mutateProfilePrice(node)}
+            
         })
     })
 }).observe(document.body, {
