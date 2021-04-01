@@ -1,0 +1,11 @@
+[
+    "Start identifying the div locations of ~$",
+    "Write regexer, returns an integer of the coin value",
+    "choose a render function for this integer, could be $$$$ or MMXII or blank",
+    "might be a useful user lookup function, so from username I can check out their price and filter them in my notifications. don't like the low value notifications.",
+    "on wallet load, push a row for each timespan (1hr / 1day etc) to storage.sync: table 1: date -> price of each coin, 2: date -> quant of each coin ",
+    "visualize this per-id history by drawing a little SVG under each name within your wallet, or just a rectangle with a gradient descent of black and white -- like a sound wave signature, density of linear gradient shows price history, neat!",
+    "maybe later some visualizations on the buy sell -- if you click on either you can bring up a more detailed purchase history that utilizing all 3 tables and draws a timeline, whatever you want",
+    "allow CSV export of the history captured -- maybe later allow import of CSV into storage.sync, just a place to keep it stashed since bitclout.com doesn't  `choose a render function for this integer, could be $$$$ or MMXII or blank`",
+    "maybe under some minimum variability, express that the changes have been small by compressing that range into a soft change from white to gray, just want to avoid barcode looking elements"
+]

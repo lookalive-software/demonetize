@@ -1,7 +1,8 @@
-{
+ {
     "name": "Demonitize",
     "description": "A string replacer to make BitClout a little bit less like a casino.",
     "version": "1.0",
+    "author": "@cdj",
     "manifest_version": 3,
     "background": {
         "service_worker": "background.js"
@@ -25,7 +26,7 @@
     "content_scripts": [
         {
             "matches": ["https://bitclout.com/*"],
-            "run_at": "document_idle",
+            "run_at": "document_end",
             "js": ["contentScript.js"]
         }
     ]
