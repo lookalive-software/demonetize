@@ -22,14 +22,22 @@ chrome.runtime.onMessage.addListener(message => {
     // I know the message will be just one key and one val for now...
     Object.entries(message).map(([key, val]) => {
         if(/exp[1234]/.test(key)){
-            if(val){
-                document.body.setAttribute(key, val)
-            } else {
-                document.body.removeAttribute(key)
-            }
+            setBoolean(document.body, key, val)
+        } else if(/nofinance/.test(key)){
+            setBoolean(document.body, key, val)
+        } else if(/nocap/.test(key)){
+            setBoolean(document.body, key, val)
         }
     })
 })
+
+function setBoolean(target, key, val){
+    if(val){
+        target.setAttribute(key, val)
+    } else {
+        target.removeAttribute(key)
+    }
+}
 // UPDATE THE TITLE TEXT
 function mutatePrice(priceHolder, target){
     let int = parseInt(priceHolder.innerText.replace(',','').match(/\d+/))
@@ -58,8 +66,11 @@ function mutateFollowers(node){
 
 function hideMarketCap(node){
     // maybe just add an attribute that hides based on CSS hidemarketcap = true false
-    node.firstElementChild.lastElementChild.style.display = 'none'
+    // node.firstElementChild.lastElementChild.style.display = 'none'
+    node.firstElementChild.lastElementChild.setAttribute("marketcap", true)
+    // instead of setting it none, I'll tag 
 }
+
 function mutateProfilePrice(node){
     mutatePrice(
         node.firstElementChild.children[3].lastElementChild.lastElementChild.firstElementChild
@@ -99,6 +110,14 @@ function cacheWallet(){
     // 
 }
 
+function tagFinanceButtons(node){
+    Array.from(node.querySelectorAll('left-bar-button'), (element, index) => {
+        if([1,2,3,4,5].includes(index)){
+            element.setAttribute("tag","finance")
+        }
+    })
+}
+
 
 // It seems on navigate I unload and reload a new app-root, so to catch this I need an observer on the body
 // on page change, well see how it looks on change...
@@ -118,6 +137,7 @@ new MutationObserver((mutationsList, observer) => {
             if(/search-bar__results-dropdown/.test(node.parentNode.parentNode.className)){ mutateSearchDropdown(node)}
             // If the node is a link to the profile ? 
             if(node.href && node.href.includes(location.pathname)){ mutateFollowers(node) }
+            if(/global__nav__inner/.test(node.className)){ tagFinanceButtons(node) }
             // if INBOX
             // if(/^messages-thread.*ng-star-inserted/i.test(node.tagName)){ mutateInbox(node)}
         })

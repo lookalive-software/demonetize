@@ -4,8 +4,12 @@ chrome.runtime.onInstalled.addListener(() => {
       "exp2": true,
       "exp3": true, 
       "exp4": true,
+      "nocap": true,
+      "nofinance": false
   })
 });
+
+// RewriteProfilePrice
 
 
 

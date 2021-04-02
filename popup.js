@@ -2,11 +2,14 @@
 
 // retrieve state from storage
 // every time the popup is opened, retrieve
+// just checkboxes
 chrome.storage.sync.get([
   "exp1",
   "exp2",
   "exp3",
-  "exp4"
+  "exp4",
+  "nofinance",
+  "nocap"
 ], storage => {
   Object.entries(storage).map(([key, val]) => {
     sendMessage({[key]: val})

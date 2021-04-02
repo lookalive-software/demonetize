@@ -10,4 +10,12 @@
     display: initial;
 }
 
+[nofinance] [tag="finance"] {
+    display: none;
+}
+
+[nocap] [marketcap] {
+    display: none;
+}
+
 /* can set top level color to get all regulat text , just need to figure out control text, links , let you change all those colors*/

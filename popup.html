@@ -24,10 +24,20 @@
           <div></div>
         </label>
       </section>
-      <label for="all">
-        Enabled
-        <input id="all" type="checkbox">
-      </label>
+      <fieldset>
+        <summary>Global</summary>
+        <label for="nofinance">
+          <input id="nofinance" type="checkbox">
+          Hide Finance Buttons
+        </label>
+      </fieldset>
+      <fieldset>
+        <summary>Profile</summary>
+        <label for="nocap">
+          <input id="nocap" type="checkbox">
+          Hide Market Cap
+        </label>
+      </fieldset>
     </form>
     <script src="popup.js"></script>
   </body>
