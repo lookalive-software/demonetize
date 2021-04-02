@@ -1,11 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="button.css">
+    <link rel="stylesheet" href="popup_style.css">
   </head>
-  <body>
-    <button id="changeColor"></button>
+  <body mood="money">
+    <form>
+      <section>
+        <label for="exp1"><!--content here is psuedo element content -->
+          <input name="exp1" id="exp1" type="checkbox" checked>
+          <div></div>
+        </label>
+        <label for="exp2"><!--content here is psuedo element content -->
+          <input name="exp2" id="exp2" type="checkbox" checked>
+          <div></div>
+        </label>
+        <label for="exp3"><!--content here is psuedo element content -->
+          <input name="exp3" id="exp3" type="checkbox" checked>
+          <div></div>
+        </label>
+        <label for="exp4"><!--content here is psuedo element content -->
+          <input name="exp4" id="exp4" type="checkbox" checked>
+          <div></div>
+        </label>
+      </section>
+      <label for="all">
+        Enabled
+        <input id="all" type="checkbox">
+      </label>
+    </form>
     <script src="popup.js"></script>
-
   </body>
 </html>

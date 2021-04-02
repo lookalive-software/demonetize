@@ -6,23 +6,39 @@ So on Browse, after the <tab selector> I have all the post children. I want to f
 
 might want to keep the price there, but hidden, so I can always look it up again... but no I'll set the attributes. exp=[1,2,3,4] and int=3245, if those attributes exist then I don't need to do the regex...
 */
-let queue = new Array
-// queue.active = false
-// queue.activate = function(){
-//     this.
 
-// }
+// popup and contentScript will just have to keep a Map of options in sync: when a checkbox is clicked, a "NAME": true/null is set
+// drop comments that don't match exponent
+
+
+// symbol can be: exponential, romanize, extra life, 5 stars    
+// sort comments by: market cap | most recent first | most recent last
+chrome.runtime.onMessage.addListener(message => {
+    console.error(message)
+    // switch(message)
+})
+// UPDATE THE TITLE TEXT
 function mutatePrice(priceHolder){
     let int = parseInt(priceHolder.innerText.replace(',','').match(/\d+/))
     let exp = parseInt(Math.max(1, Math.log10(int)))
     priceHolder.innerText = " ".padStart(exp + 1, "$") // replace according to current settings, maybe an emoji or whathaveyou
 }
 
-function mutateFeedPost(node){
+function mutateComment(node){
     mutatePrice(
         node.querySelector(".feed-post__coin-price-holder")
     )
 }
+// Profile : Posts | Creator Coin
+// on mutation, I can set tab selector parent node last child as hidden until I click, count the number of shareholders, click back, and drop the hidden style
+// maybe set an attribute on the parentNode, "INPROGRESS"=true, when the counting is done, delete the attribute.
+// find posts / creator coin, click creator coin, count the list...
+// [inprogress]:last-child {visibility: hidden} 
+function mutateFollowers(node){
+    // hide everything, count up creator coins...
+}
+
+
 function hideMarketCap(node){
     // maybe just add an attribute that hides based on CSS hidemarketcap = true false
     node.firstElementChild.lastElementChild.style.display = 'none'
@@ -37,18 +53,44 @@ function mutateSearchDropdown(node){
         node.lastElementChild
     )
 }
+function mutateInbox(node){
+    // Array.from(node.children, child => 
+}
+
+function updateTitleText(){
+    let suffix = " - BitClout"
+    let [route, subroute] = location.pathname.split('/').slice(1)
+    switch(route){
+        case 'u':
+            document.title = subroute + suffix
+        break
+        case 'posts':
+            setTimeout(() => {
+                document.title = document.querySelector('post-thread').firstElementChild.firstElementChild.innerText
+            }, 100)
+    }
+}
+
 
 // It seems on navigate I unload and reload a new app-root, so to catch this I need an observer on the body
 // on page change, well see how it looks on change...
 new MutationObserver((mutationsList, observer) => {
     // anytime a mutatution has occured, check the location.href and update the document.title
-    console.log()
+    updateTitleText()
     mutationsList.map(mutation => {
-        // console.log(mutation.addedNodes)
+        console.log(mutation.addedNodes)
+        // I'll need a function that responds to every mutation, and first checks location.href to filter down 
+        // so I need to organize the options by sublocation, so I'm not checking for irrelevant nodes
+        // arrange the object into buckets for relative pages, I'll build the form out of it: name + function.
         Array.from(mutation.addedNodes).map(node => {
-            if(/js-feed-post/.test(node.className)){ mutateFeedPost(node) }
+            if(/js-feed-post/.test(node.className)){ mutateComment(node) }
+            if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
+            // if U and not ?Buy
             if(/creator-profile-top-card/i.test(node.tagName)){ hideMarketCap(node), mutateProfilePrice(node)}
             if(/search-bar__results-dropdown/.test(node.parentNode.parentNode.className)){ mutateSearchDropdown(node)}
+            if(node.href && node.href.includes(location.pathname)){ mutateFollowers(node) }
+            // if INBOX
+            // if(/^messages-thread.*ng-star-inserted/i.test(node.tagName)){ mutateInbox(node)}
         })
     })
 }).observe(document.body, {

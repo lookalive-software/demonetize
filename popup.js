@@ -1,27 +1,26 @@
 // Initialize button with user's preferred color
-let changeColor = document.getElementById("changeColor");
 
+// retrieve state from storage
 chrome.storage.sync.get("color", ({ color }) => {
-  changeColor.style.backgroundColor = color;
+  // changeColor.style.backgroundColor = color;
 });
 
-// When the button is clicked, inject setPageBackgroundColor into current page
-changeColor.addEventListener("click", async () => {
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      function: setPageBackgroundColor,
-    });
-  });
-  
-  // The body of this function will be executed as a content script inside the
-  // current page
-  function setPageBackgroundColor() {
-    chrome.storage.sync.get("color", ({ color }) => {
-      document.body.querySelector('.global__container').style.backgroundColor = color;
-    });
-  }
+// Each option will basically need to interact in the same way
+let enable = document.getElementById('all')
+
+enable.addEventListener('change', event => {
+  console.log(event.target.checked)
+  // event.target.id
+  sendMessage({enable: event.target.checked})
+});
+
+function sendMessage(message){
+  chrome.tabs.query({active:true, currentWindow: true}, function(tabs){
+      chrome.tabs.sendMessage(tabs[0].id, message)
+  })
+}
+
+
 
 /*
 add an event listener for the checkboxes, to update the show/hide css on timelines

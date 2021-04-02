@@ -1,0 +1,98 @@
+form {
+  width: 200px;
+}
+
+/* mood needs to rewrite a top level var */
+body[mood="money"] {
+  --exp1: "$";
+  --exp2: "$$";
+  --exp3: "$$$";
+  --exp4: "$$$$";
+}
+
+body[mood="diamonds"] {
+  --exp1: "💎";
+  --exp2: "💎💎";
+  --exp3: "💎💎💎";
+  --exp4: "💎💎💎💎";
+}
+/* romanize will rewrite, but it still tags the posts by exponent so they can be sorted*/
+body[mood="romanize"] {
+  --exp1: "I";
+  --exp2: "X";
+  --exp3: "C";
+  --exp4: "M";
+}
+/* in the future, it might be useful to stretch the ranges instead of just x10...*/
+/* regardless, these variables are just in the popup css, so they'll be hardcoded in the replacement algo... not psuedo elements */
+/* maybe in the future this could be a css switch based on mood, the content of the after tag determined by exp...
+/* and keeping the original value in tact to read again */
+
+#all[type="checkbox"] {
+  float: right;
+}
+
+section {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+/* in order to change the contents of the checkboxes, just use content css rules */
+[for^="exp"] {
+  position: relative;
+}
+
+[for^="exp"] > div {
+  width: 34px;
+  height: 2.7em;
+  text-align: center;
+  border-radius: 5px;
+  display: inline-block;
+  line-height: 3.5em;
+  font-weight: 700;
+  color: white;
+  background: lightgray;
+  opacity: 0.8;
+  border: 1px solid grey;
+}
+
+[type="checkbox"]:checked + div {
+  background-color: #f5f5f5;
+  color: #0059f7;
+}
+
+/* div will be a different color when checkbox is checked */
+/* clicking inside the label will affect the checkbox */
+/* [for^="exp"] > div {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background-color: rgb(175, 241, 184);
+} */
+
+
+[for^="exp"] > div:before {
+  display: block;
+}
+
+[for^="exp"] > input {
+  position: absolute;
+  top: -3px;
+  left: -4px;
+  z-index: 1;
+}
+/* can I effect a psuedo tag by the state of its "neighbor" ? */
+
+[for="exp1"] > div:before {
+  content: var(--exp1);
+}
+[for="exp2"] > div:before {
+  content: var(--exp2);
+}
+[for="exp3"] > div:before {
+  content: var(--exp3);
+}
+[for="exp4"]  > div:before {
+  content: var(--exp4);
+}
