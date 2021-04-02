@@ -27,7 +27,8 @@
         {
             "matches": ["https://bitclout.com/*"],
             "run_at": "document_end",
-            "js": ["contentScript.js"]
+            "js": ["contentScript.js"],
+            "css" : ["contentStyle.css"]
         }
     ]
   }

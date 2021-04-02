@@ -9,7 +9,12 @@ might want to keep the price there, but hidden, so I can always look it up again
 
 // popup and contentScript will just have to keep a Map of options in sync: when a checkbox is clicked, a "NAME": true/null is set
 // drop comments that don't match exponent
-
+// add defaults to the body, or somehow request the settings,
+// can't leave body just sitting there!
+// document.body.setAttribute("exp1", true)
+// document.body.setAttribute("exp2", true)
+// document.body.setAttribute("exp3", true)
+// document.body.setAttribute("exp4", true)
 
 // symbol can be: exponential, romanize, extra life, 5 stars    
 // sort comments by: market cap | most recent first | most recent last
@@ -26,16 +31,20 @@ chrome.runtime.onMessage.addListener(message => {
     })
 })
 // UPDATE THE TITLE TEXT
-function mutatePrice(priceHolder){
+function mutatePrice(priceHolder, target){
     let int = parseInt(priceHolder.innerText.replace(',','').match(/\d+/))
     let exp = parseInt(Math.max(1, Math.log10(int)))
     priceHolder.innerText = " ".padStart(exp + 1, "$") // replace according to current settings, maybe an emoji or whathaveyou
+    target && target.setAttribute("exp", exp)
 }
 
 function mutateComment(node){
+    console.log("COMMENT", node)
     mutatePrice(
-        node.querySelector(".feed-post__coin-price-holder")
+        node.querySelector(".feed-post__coin-price-holder"),
+        node.parentElement.parentElement.parentElement
     )
+    // from this node, one node up should have its exp attribute set so it can be shown and hidden
 }
 // Profile : Posts | Creator Coin
 // on mutation, I can set tab selector parent node last child as hidden until I click, count the number of shareholders, click back, and drop the hidden style
@@ -83,7 +92,11 @@ function cacheWallet(){
     // if location is wallet, capture the row nodes and parse their values...
     // ...stash the profile pics in sync storage... 
     // replace Top Weakly Creators with Your Top Creators
-    //  
+    //  sync will have to be key value:
+    // each key is a date, corresponding 
+    // then a header row can be updated labeling each column
+    // empty columns is OK ,,,, 
+    // 
 }
 
 

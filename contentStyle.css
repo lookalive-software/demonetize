@@ -1,0 +1,13 @@
+* {
+    color: blueviolet;
+}
+
+[exp] {
+    display: none;
+}
+
+[exp1] [exp="1"], [exp2] [exp="2"], [exp3] [exp="3"], [exp4] [exp="4"] {
+    display: initial;
+}
+
+/* can set top level color to get all regulat text , just need to figure out control text, links , let you change all those colors*/
