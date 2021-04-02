@@ -14,8 +14,16 @@ might want to keep the price there, but hidden, so I can always look it up again
 // symbol can be: exponential, romanize, extra life, 5 stars    
 // sort comments by: market cap | most recent first | most recent last
 chrome.runtime.onMessage.addListener(message => {
-    console.error(message)
-    // switch(message)
+    // I know the message will be just one key and one val for now...
+    Object.entries(message).map(([key, val]) => {
+        if(/exp[1234]/.test(key)){
+            if(val){
+                document.body.setAttribute(key, val)
+            } else {
+                document.body.removeAttribute(key)
+            }
+        }
+    })
 })
 // UPDATE THE TITLE TEXT
 function mutatePrice(priceHolder){
@@ -71,6 +79,13 @@ function updateTitleText(){
     }
 }
 
+function cacheWallet(){
+    // if location is wallet, capture the row nodes and parse their values...
+    // ...stash the profile pics in sync storage... 
+    // replace Top Weakly Creators with Your Top Creators
+    //  
+}
+
 
 // It seems on navigate I unload and reload a new app-root, so to catch this I need an observer on the body
 // on page change, well see how it looks on change...
@@ -88,6 +103,7 @@ new MutationObserver((mutationsList, observer) => {
             // if U and not ?Buy
             if(/creator-profile-top-card/i.test(node.tagName)){ hideMarketCap(node), mutateProfilePrice(node)}
             if(/search-bar__results-dropdown/.test(node.parentNode.parentNode.className)){ mutateSearchDropdown(node)}
+            // If the node is a link to the profile ? 
             if(node.href && node.href.includes(location.pathname)){ mutateFollowers(node) }
             // if INBOX
             // if(/^messages-thread.*ng-star-inserted/i.test(node.tagName)){ mutateInbox(node)}

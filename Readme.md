@@ -1,3 +1,7 @@
+Major fixes:
+    Updates the Title Text so back buttons works
+    Show Shareholders instead of Followers
+        user page -> tab selector -> click last child, count...
 
 OPTIONS:
     hide creators__balance-box (true)
