@@ -16,11 +16,35 @@ might want to keep the price there, but hidden, so I can always look it up again
 // document.body.setAttribute("exp3", true)
 // document.body.setAttribute("exp4", true)
 
+let defaults = {
+    "exp1": true,
+    "exp2": true,
+    "exp3": true, 
+    "exp4": true,
+    "nocap": true,
+    "nofinance": false
+  }
+
+chrome.storage.sync.get(Object.keys(defaults), updateAttributes)
+
+chrome.storage.onChanged.addListener((changes) => {
+    Object.entries(changes).map(([key, values]) => {
+        updateAttributes({[key]: values.newValue})
+    })
+})
+
+// window.onfocus(event => {
+//     chrome.storage.sync.get(Object.keys(defaults), updateAttributes)
+// })
+
+// chrome.runtime.onMessage.addListener()
+
 // symbol can be: exponential, romanize, extra life, 5 stars    
 // sort comments by: market cap | most recent first | most recent last
-chrome.runtime.onMessage.addListener(message => {
-    // I know the message will be just one key and one val for now...
-    Object.entries(message).map(([key, val]) => {
+// on load, ask the run time what the state is...
+
+function updateAttributes(newState){
+    Object.entries(newState).map(([key, val]) => {
         if(/exp[1234]/.test(key)){
             setBoolean(document.body, key, val)
         } else if(/nofinance/.test(key)){
@@ -29,7 +53,7 @@ chrome.runtime.onMessage.addListener(message => {
             setBoolean(document.body, key, val)
         }
     })
-})
+}
 
 function setBoolean(target, key, val){
     if(val){
@@ -112,7 +136,7 @@ function cacheWallet(){
 
 function tagFinanceButtons(node){
     Array.from(node.querySelectorAll('left-bar-button'), (element, index) => {
-        if([1,2,3,4,5].includes(index)){
+        if([1,2,3,4].includes(index)){
             element.setAttribute("tag","finance")
         }
     })
@@ -130,6 +154,7 @@ new MutationObserver((mutationsList, observer) => {
         // so I need to organize the options by sublocation, so I'm not checking for irrelevant nodes
         // arrange the object into buckets for relative pages, I'll build the form out of it: name + function.
         Array.from(mutation.addedNodes).map(node => {
+            // switch based on location, use if else
             if(/js-feed-post/.test(node.className)){ mutateComment(node) }
             if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
             // if U and not ?Buy
@@ -138,6 +163,10 @@ new MutationObserver((mutationsList, observer) => {
             // If the node is a link to the profile ? 
             if(node.href && node.href.includes(location.pathname)){ mutateFollowers(node) }
             if(/global__nav__inner/.test(node.className)){ tagFinanceButtons(node) }
+            // inbox HREF coin price
+            if(node.href && /\/u\/.*\/buy$/.test(node.href)){
+                // mutateInboxPrice()
+            }
             // if INBOX
             // if(/^messages-thread.*ng-star-inserted/i.test(node.tagName)){ mutateInbox(node)}
         })
