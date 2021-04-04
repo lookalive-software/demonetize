@@ -16,16 +16,21 @@ might want to keep the price there, but hidden, so I can always look it up again
 // document.body.setAttribute("exp3", true)
 // document.body.setAttribute("exp4", true)
 
-let defaults = {
-    "exp1": true,
-    "exp2": true,
-    "exp3": true, 
-    "exp4": true,
-    "nocap": true,
-    "nofinance": false
-  }
+// let defaults = {
+//     "exp1": true,
+//     "exp2": true,
+//     "exp3": true, 
+//     "exp4": true,
+//     "nocap": true,
+//     "nofinance": false
+//   }
 
-chrome.storage.sync.get(Object.keys(defaults), updateAttributes)
+chrome.storage.sync.get(["keys"], ({keys}) => {
+    console.log("KEYS", keys.split(' '))
+    chrome.storage.sync.get(keys.split(' '), updateAttributes)
+})
+
+// chrome.storage.sync.get(Object.keys(defaults), updateAttributes)
 
 chrome.storage.onChanged.addListener((changes) => {
     Object.entries(changes).map(([key, values]) => {
