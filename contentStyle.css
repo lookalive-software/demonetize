@@ -1,6 +1,4 @@
-* {
-    color: blueviolet;
-}
+
 
 /*
     Hide anything that has been assigned an exponential value
@@ -21,7 +19,7 @@
 /* this is the top right hand "BitClout Price" + "Your BitClout" */
 [nobalance] .right-bar-creators__balance-box,
 /* this is the Top Weekly Creators section */
-[noleaders] right-bar-creators [href="/creators"],
+[noleaders] right-bar-creators [href^="/creators"],
 [noleaders] right-bar-creators-leaderboard,
 /* the left hand side has a few buttons that could tempt you to look at numbers */
 [nofinance] left-bar-button [href^="/creators"],
@@ -35,7 +33,7 @@
 [noprice] [tag="price"],
 [noprice] creator-profile-top-card [tag="price"] + div,
 
-[nofollow] creator-profile-top-card [href$="followers"],
+[nofollow] creator-profile-top-card [href*="/followers"],
 /* this is the numbers next to the comment, reclout, heart, and link to post */
 [nometric] [tag="metric"]
 {
@@ -43,13 +41,56 @@
     /* have to override some inline styles */
 }
 /* buy button on profile page */
-[nobuy] creator-profile-top-card .btn-primary[href$="/buy"]
+[nobuy] creator-profile-top-card .btn-primary[href*="/buy"]
 {
     display: none;
 }
+/* hot fix because deleting the button moves things around */
 creator-profile-top-card > div > div:nth-child(4){
     margin-top: 10px;
 }
+
+
+.global__container {
+    background-color: white;
+}
+body[invert] {
+    filter: invert(1) hue-rotate(100deg);
+}
+
+[invert] .search-bar__avatar,
+[invert] .feed-post__avatar,
+[invert] .creator-profile__avatar,
+[invert] .right-bar-creators-leaderboard__creator-avatar,
+[invert] .feed-create-post__avatar,
+[invert] .message__avatar,
+[invert] img {
+    filter: invert(1)  hue-rotate(-100deg);
+}
+/* leave the logo alone */
+[invert] [href="/browse"] img {
+    filter: none;
+}
+
+
+/* just trying to figure out some colors...
+.fc-default {
+    color: #222;
+}
+.feed-post__coin-price-holder {
+    background-color: #f5f5f5;
+}
+a, .tab-underline-active {
+    color: #0059f7;
+}
+
+.btn-primary, .btn-primary-disabled {
+    background-color: #005bff;
+    border-color: #005bff;
+}
+.left-bar__dot-active {
+    color: #0058f7;
+} */
 
 
 /* who has color? */

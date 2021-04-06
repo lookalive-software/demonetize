@@ -48,6 +48,18 @@ body[mood="romanize"] {
 /* regardless, these variables are just in the popup css, so they'll be hardcoded in the replacement algo... not psuedo elements */
 /* maybe in the future this could be a css switch based on mood, the content of the after tag determined by exp...
 /* and keeping the original value in tact to read again */
+/* fieldset#color span {
+  position: absolute;
+}
+#invert, #rotate {
+  width: calc(100% - 40px);
+  margin-left: 40px;
+} */
+
+#brightness {
+  width: calc(100% - 60px);
+  margin-left: 60px;
+} 
 
 section#pricefilter {
   display: flex;

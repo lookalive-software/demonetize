@@ -12,7 +12,10 @@ let defaults = {
   "nobuy": false,
   "nofollow": false,
   "nometric": false,
-  "mood": "dollar sign"
+  "mood": "dollar sign",
+  // "rotate": 0,
+  "invert": false,
+  // "brightness": 1
 }
 // stuff an entire string of the names of all the keys so content and popup and grab the complete list of keys it needs to request
 // in order to sync with storage 

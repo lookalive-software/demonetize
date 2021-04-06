@@ -24,6 +24,16 @@ Array.from(
   )
 )
 
+// Array.from(
+//   document.querySelectorAll('[type="range"]'),
+//   ranges =>
+//   ranges.addEventListener('change',
+//     event => {
+//       chrome.storage.sync.set({[event.target.id]: event.target.value})
+//     }
+//   )
+// )
+
 function setBoolean(target, key, val){
   if(val){
       target.setAttribute(key, val)
@@ -50,10 +60,16 @@ chrome.storage.sync.get(["keys"], ({keys}) => {
         'noblchk',
         'nobuy',
         'nofollow',
-        'nometric'
+        'nometric',
+        'invert'
       ].includes(key)){
         document.getElementById(key).checked = val
-      } else if(key == "mood"){
+      } else if([
+        "mood",
+        // "rotate",
+        // "invert",
+        // "brightness"
+      ].includes(key)){
         document.getElementById(key).value = val
       }
     })

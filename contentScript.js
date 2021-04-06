@@ -9,6 +9,79 @@ chrome.storage.onChanged.addListener((changes) => {
     })
 })
 
+new MutationObserver(mutationsList => {
+    // anytime a mutatution has occured,
+    // check the location.href and update the document.title
+    if(location.href != lastLocation){
+        lastLocation = location.href
+        updateTitleText()
+    }
+    mutationsList.map(mutation => {
+        // console.log(mutation.addedNodes)
+        Array.from(mutation.addedNodes).map(node => {
+            if(/js-feed-post/.test(node.className))
+            {
+                mutateComment(node)
+            }
+            // if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
+            else if(node.classList && node.classList.contains("modal-backdrop"))
+            { 
+                mutateComment(node.nextElementSibling)
+            }
+            else if(/creator-profile-top-card/i.test(node.tagName))
+            {
+                mutateProfilePrice(node)
+            }
+            /* these are annoying, I was trying to nail down the case of switching between Global and Following, and changing screen width */
+            else if(node.previousElementSibling && "TAB_SELECTOR" === node.previousElementSibling.tagName)
+            {
+                Array.from(node.children, child => {
+                    mutateComment(child.querySelector('.js-feed-post'))
+                })
+            }
+            else if("TAB_SELECTOR" === node.tagName)
+            {
+                Array.from(node.nextElementSibling.children, child => {
+                    mutateComment(child.querySelector('.js-feed-post'))
+                })
+            }
+            else if(node.parentElement && "RIGHT-BAR-CREATORS-LEADERBOARD" == node.parentElement.tagName)
+            {
+                mutatePrice(node.lastChild)
+            }
+            // else if(node.href && node.href.includes(location.pathname)){ mutateFollowers(node) }
+            // else if(/global__nav__inner/.test(node.className)){ tagFinanceButtons(node) }
+            // inbox HREF coin price
+            else if(node.href && /\/u\/.*\/buy$/.test(node.href)){
+                // mutateInboxPrice()
+            }
+
+            else if(location.search.includes('creator-coin')){
+                // ask for the text content of the node and find out if it ends with a price 
+                if(node.classList && node.classList.contains('row') && /\$\d+\.\d{2}K{0,1}$/.test(node.textContent.trim())){
+                    // OK, the node is the container row, the price is the lastChild
+                    mutatePrice(node.lastElementChild)
+                    // console.log(node)
+                }
+            }
+            // well it wasn't anything else, check if its the search bar
+            // else if(node.parentNode
+            //     && node.parentNode.parentNode 
+            //     && /search-bar__results-dropdown/.test(node.parentNode.parentNode.className))
+            //     { mutatePrice(node.lastElementChild) }
+            else if(node.firstElementChild && node.firstElementChild.classList.contains('search-bar__avatar')){
+                mutatePrice(node.lastElementChild)
+            }
+
+            // if INBOX
+            // if(/^messages-thread.*ng-star-inserted/i.test(node.tagName)){ mutateInbox(node)}
+        })
+    })
+}).observe(document.body, {
+    childList: true,
+    subtree: true
+})
+
 /* right now I'm only ever updating an attribute on the body and letting CSS do the rest */
 /* this is changes that occur via popup */
 /* all other actions are triggered by mutation events */
@@ -19,25 +92,20 @@ function updateAttributes(newState){
                 let currentMood = document.body.getAttribute('mood')
                 if(currentMood && val != currentMood){ location.reload() }
             case 'nometrics':
-
             case 'nocap':
             case 'nobalance':
             case 'noleaders':
             case 'noprice':
             case 'noblchk': 
+            case 'invert':
             default:
-                setBoolean(document.body, key, val)
-                // /exp[1234]/.test(key) && setBoolean(document.body, key, val)
+                if(val){
+                    document.body.setAttribute(key, val)
+                } else {
+                    document.body.removeAttribute(key)
+                }                // /exp[1234]/.test(key) && setBoolean(document.body, key, val)
         }
     })
-}
-
-function setBoolean(target, key, val){
-    if(val){
-        target.setAttribute(key, val)
-    } else {
-        target.removeAttribute(key)
-    }
 }
 
 // on updateAttributes, if the attribute is mood, refresh the page...
@@ -46,7 +114,7 @@ function MoneyInWhatMood(price, int, exp){
     let mood = document.body.getAttribute("mood")
     // concat is just doing an emoji compatible padStart (❤️.length == 2), padStart hated that
     // maybe if I import leftPad my issue can be solved...
-    let concat = (string, times) => times == 1 ? string : string + concat(string, --times)
+    let concat = (string, times) => times <= 1 ? string : string + concat(string, --times)
 
     const moods = {
         'red hearts': '❤️',
@@ -61,7 +129,6 @@ function MoneyInWhatMood(price, int, exp){
         case 'diamondhands':
         case 'gold stars':
         case 'bananas':
-            // return " ".padStart(exp + 1, moods[mood])
             return concat(moods[mood], exp)
         case 'romanize':
             return romanize(int)
@@ -74,20 +141,12 @@ function MoneyInWhatMood(price, int, exp){
     }
 }
 
-function concat(string, times){
-    if(times == 1){
-        return string
-    } else {
-        return string + concat(string, --times)
-    }
-}
-
-
 
 function mutatePrice(priceHolder, target){
     let price = priceHolder.innerText
     console.log("PRICE", price)
     let int = parseInt(price.replace(',','').match(/\d+/))
+    if(price.includes('K')){ int *= 1000 }
     let exp = parseInt(Math.max(1, Math.log10(int)))
     priceHolder.innerText = " " + MoneyInWhatMood(price, int, exp) + " " // replace according to current settings, maybe an emoji or whathaveyou
     priceHolder.setAttribute("tag", "price")
@@ -97,7 +156,7 @@ function mutatePrice(priceHolder, target){
 function mutateComment(node){
     mutatePrice(
         node.querySelector(".feed-post__coin-price-holder"),
-        node.parentElement.parentElement.parentElement
+        node.parentElement.parentElement.parentElement // tags comments with exp
     )
     node.querySelectorAll("feed-post-icon-row i").forEach(icon => {
         /* replace all the text with tagged spans so I can hide them */
@@ -106,8 +165,8 @@ function mutateComment(node){
         span.textContent = icon.parentElement.textContent.trim()
         icon.parentElement.replaceChild(span, icon.nextSibling)
     })
-    // from this node, one node up should have its exp attribute set so it can be shown and hidden
 }
+
 // Profile : Posts | Creator Coin
 // on mutation, I can set tab selector parent node last child as hidden until I click, count the number of shareholders, click back, and drop the hidden style
 // maybe set an attribute on the parentNode, "INPROGRESS"=true, when the counting is done, delete the attribute.
@@ -122,11 +181,7 @@ function mutateProfilePrice(node){
         node.firstElementChild.children[3].lastElementChild.lastElementChild.firstElementChild
     )
 }
-function mutateSearchDropdown(node){
-    mutatePrice(
-        node.lastElementChild
-    )
-}
+
 function mutateInbox(node){
     // Array.from(node.children, child => 
 }
@@ -182,57 +237,7 @@ function tagFinanceButtons(node){
 // on page change, well see how it looks on change...
 let lastLocation = null
 
-new MutationObserver((mutationsList, observer) => {
-    // anytime a mutatution has occured, check the location.href and update the document.title
-    if(location.href != lastLocation){
-        lastLocation = location.href
-        updateTitleText()
-    }
-    mutationsList.map(mutation => {
-        console.log(mutation.addedNodes)
-        // I'll need a function that responds to every mutation, and first checks location.href to filter down 
-        // so I need to organize the options by sublocation, so I'm not checking for irrelevant nodes
-        // arrange the object into buckets for relative pages, I'll build the form out of it: name + function.
-        Array.from(mutation.addedNodes).map(node => {
-            // switch based on location, use if else
-            if(/js-feed-post/.test(node.className)){ mutateComment(node) }
-            
-            // if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
-            else if(node.classList && node.classList.contains("modal-backdrop")){ mutateComment(node.nextElementSibling)}
-            else if(/creator-profile-top-card/i.test(node.tagName)){ mutateProfilePrice(node)}
-            /* these are annoying, I was trying to nail down the case of switching between Global and Following, and changing screen width */
-            else if(node.previousElementSibling && "TAB_SELECTOR" === node.previousElementSibling.tagName){
-                Array.from(node.children, child => {
-                    mutateComment(child.querySelector('.js-feed-post'))
-                })
-            }
-            else if("TAB_SELECTOR" === node.tagName){
-                Array.from(node.nextElementSibling.children, child => {
-                    mutateComment(child.querySelector('.js-feed-post'))
-                })
-            }
-            else if(node.parentElement && "RIGHT-BAR-CREATORS-LEADERBOARD" == node.parentElement.tagName){
-                mutatePrice(node.lastChild)
-            }
-            // else if(node.href && node.href.includes(location.pathname)){ mutateFollowers(node) }
-            // else if(/global__nav__inner/.test(node.className)){ tagFinanceButtons(node) }
-            // inbox HREF coin price
-            else if(node.href && /\/u\/.*\/buy$/.test(node.href)){
-                // mutateInboxPrice()
-            }
-            else if(node.parentNode
-                    && node.parentNode.parentNode 
-                    && /search-bar__results-dropdown/.test(node.parentNode.parentNode.className))
-                    { mutateSearchDropdown(node) }
 
-            // if INBOX
-            // if(/^messages-thread.*ng-star-inserted/i.test(node.tagName)){ mutateInbox(node)}
-        })
-    })
-}).observe(document.body, {
-    childList: true,
-    subtree: true
-})
 
 // As elements are headed to the screen, they are filtered down to those of interest and processed right away
 // Maybe as I add jobs to the schedule I can set an attribute of 'done' and hide everything with done=0 
@@ -317,3 +322,5 @@ function romanize(num) {
 // 10,000  ↂ  X̅	
 // 50,000  ↇ L̅
 // 100,000 ↈ C̅
+
+/* TO DO */
