@@ -279,25 +279,25 @@ Let's set an attribute for "exponent" so after I grab the integer,
 // }
 
 function romanize(num) {
+    	// Ⅱ	Ⅲ			Ⅵ	Ⅶ	Ⅷ			Ⅺ	Ⅻ				
     var lookup = {
-        "ↈ": 100000,
-        "ↇ": 50000,
-        "ↂ": 10000,
-        "ↁ": 5000,
-        M:1000,
-        CM:900,
-        D:500,
-        CD:
-        400,
-        C:100,
-        XC:90,
-        L:50,
-        XL:40,
-        X:10,
-        IX:9,
-        V:5,
-        IV:4,
-        I:1
+        C̅: 100000,
+        L̅: 50000,
+        X̅: 10000,
+        V̅: 5000,
+        Ⅿ:1000,
+        ⅭⅯ:900,
+        Ⅾ:500,
+        ⅭⅮ: 400,
+        Ⅽ:100,
+        Ⅽ:90,
+        Ⅼ:50,
+        ⅩⅬ:40,
+        Ⅹ:10,
+        Ⅸ:9,
+        Ⅴ:5,
+        Ⅳ:4,
+        Ⅰ:1
     }
     var roman = ''
     for (var i in lookup ) {
