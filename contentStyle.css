@@ -2,20 +2,57 @@
     color: blueviolet;
 }
 
+/*
+    Hide anything that has been assigned an exponential value
+*/
 [exp] {
     display: none;
 }
-
-[exp1] [exp="1"], [exp2] [exp="2"], [exp3] [exp="3"], [exp4] [exp="4"] {
+/*
+    But reveal those that are selected by body attributes exp*
+*/
+[exp1] [exp="1"],
+[exp2] [exp="2"],
+[exp3] [exp="3"],
+[exp4] [exp="4"] {
     display: initial;
 }
+/* These are all targeted elements toggled by a checkbox */
+/* this is the top right hand "BitClout Price" + "Your BitClout" */
+[nobalance] .right-bar-creators__balance-box,
+/* this is the Top Weekly Creators section */
+[noleaders] right-bar-creators [href="/creators"],
+[noleaders] right-bar-creators-leaderboard,
+/* the left hand side has a few buttons that could tempt you to look at numbers */
+[nofinance] left-bar-button [href^="/creators"],
+[nofinance] left-bar-button [href^="/buy-bitclout"],
+[nofinance] left-bar-button [href^="/send-bitclout"],
+[nofinance] left-bar-button [href^="/wallet"],
+/* market cap of profile page */
+[nocap] creator-profile-top-card > div > div:last-child,
+/* blue checkmarks */
+[noblchk] i.fa-check-circle,
+[noprice] [tag="price"],
+[noprice] creator-profile-top-card [tag="price"] + div,
 
-[nofinance] [tag="finance"] {
+[nofollow] creator-profile-top-card [href$="followers"],
+/* this is the numbers next to the comment, reclout, heart, and link to post */
+[nometric] [tag="metric"]
+{
+    display: none !important;
+    /* have to override some inline styles */
+}
+/* buy button on profile page */
+[nobuy] creator-profile-top-card .btn-primary[href$="/buy"]
+{
     display: none;
 }
-
-[nocap] [marketcap] {
-    display: none;
+creator-profile-top-card > div > div:nth-child(4){
+    margin-top: 10px;
 }
+
+
+/* who has color? */
+
 
 /* can set top level color to get all regulat text , just need to figure out control text, links , let you change all those colors*/

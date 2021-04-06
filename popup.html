@@ -6,37 +6,88 @@
   </head>
   <body mood="money">
     <form>
-      <section>
-        <label for="exp1"><!--content here is psuedo element content -->
-          <input name="exp1" id="exp1" type="checkbox" checked>
-          <div></div>
-        </label>
-        <label for="exp2"><!--content here is psuedo element content -->
-          <input name="exp2" id="exp2" type="checkbox" checked>
-          <div></div>
-        </label>
-        <label for="exp3"><!--content here is psuedo element content -->
-          <input name="exp3" id="exp3" type="checkbox" checked>
-          <div></div>
-        </label>
-        <label for="exp4"><!--content here is psuedo element content -->
-          <input name="exp4" id="exp4" type="checkbox" checked>
-          <div></div>
-        </label>
-      </section>
       <fieldset>
         <summary>Global</summary>
         <label for="nofinance">
           <input id="nofinance" type="checkbox">
           Hide Finance Buttons
         </label>
+        <!-- Later this can be a drop down of what to show -->
+        <!-- Your Hodlers, Hodlees, or Leaderboard -->
+        <label for="nobalance">
+          <input id="nobalance" type="checkbox">
+          Hide BitClout Balance
+        </label>
+        <label for="noleaders">
+          <input id="noleaders" type="checkbox">
+          Hide Leaderboard
+        </label>
+        <label for="noblchk">
+          <input id="noblchk" type="checkbox">
+          Hide Blue Checks
+        </label>
+        <label for="noprice">
+          <input id="noprice" type="checkbox">
+          Hide All Prices
+        </label>
+        <label for="mood">
+          Price Style
+          <select id="mood">
+            <option value="default">default</option>
+            <option value="internetpts">internet pts</option>
+            <option value="romanize">romanize</option>
+            <option value="dollar sign">$$$$</option>
+            <option value="red hearts">❤️❤️❤️❤️</option>
+            <option value="gold stars">⭐⭐⭐⭐</option>
+            <option value="diamondhands">💎💎💎💎</option>
+            <option value="bananas">🍌🍌🍌🍌</option>
+          </select>
+        </label>
       </fieldset>
+      <fieldset>
+        <summary>Comments</summary>
+        <label for="nometric">
+          <input id="nometric" type="checkbox">
+          Hide All Metrics
+        </label>
+      </fieldset>
+        <!-- sort by most recent ... -->
       <fieldset>
         <summary>Profile</summary>
         <label for="nocap">
           <input id="nocap" type="checkbox">
           Hide Market Cap
         </label>
+        <label for="nofollow">
+          <input id="nofollow" type="checkbox">
+          Hide Followers
+        </label>
+        <label for="nobuy">
+          <input id="nobuy" type="checkbox">
+          <!-- should apply to both BUY button and the links in creator coin view -->
+          Hide Buy / Sell Buttons
+        </label>
+      </fieldset>
+      <fieldset>
+        <summary>filter posts</summary>
+        <section id="pricefilter">
+          <label for="exp1"><!--content here is psuedo element content -->
+            <input name="exp1" id="exp1" type="checkbox" checked>
+            <div></div>
+          </label>
+          <label for="exp2"><!--content here is psuedo element content -->
+            <input name="exp2" id="exp2" type="checkbox" checked>
+            <div></div>
+          </label>
+          <label for="exp3"><!--content here is psuedo element content -->
+            <input name="exp3" id="exp3" type="checkbox" checked>
+            <div></div>
+          </label>
+          <label for="exp4"><!--content here is psuedo element content -->
+            <input name="exp4" id="exp4" type="checkbox" checked>
+            <div></div>
+          </label>
+        </section>
       </fieldset>
     </form>
     <script src="popup.js"></script>

@@ -1,36 +1,7 @@
-/*
-Stretch: Process one price at a time with a setImmediate to give the rest of the page the chance to do something in case I get stuck in an infinite loop or something.
-
-First step, find all the prices in each post.
-So on Browse, after the <tab selector> I have all the post children. I want to flatten all the nodes and find the first occrurance of ~$
-
-might want to keep the price there, but hidden, so I can always look it up again... but no I'll set the attributes. exp=[1,2,3,4] and int=3245, if those attributes exist then I don't need to do the regex...
-*/
-
-// popup and contentScript will just have to keep a Map of options in sync: when a checkbox is clicked, a "NAME": true/null is set
-// drop comments that don't match exponent
-// add defaults to the body, or somehow request the settings,
-// can't leave body just sitting there!
-// document.body.setAttribute("exp1", true)
-// document.body.setAttribute("exp2", true)
-// document.body.setAttribute("exp3", true)
-// document.body.setAttribute("exp4", true)
-
-// let defaults = {
-//     "exp1": true,
-//     "exp2": true,
-//     "exp3": true, 
-//     "exp4": true,
-//     "nocap": true,
-//     "nofinance": false
-//   }
 
 chrome.storage.sync.get(["keys"], ({keys}) => {
-    console.log("KEYS", keys.split(' '))
     chrome.storage.sync.get(keys.split(' '), updateAttributes)
 })
-
-// chrome.storage.sync.get(Object.keys(defaults), updateAttributes)
 
 chrome.storage.onChanged.addListener((changes) => {
     Object.entries(changes).map(([key, values]) => {
@@ -38,24 +9,25 @@ chrome.storage.onChanged.addListener((changes) => {
     })
 })
 
-// window.onfocus(event => {
-//     chrome.storage.sync.get(Object.keys(defaults), updateAttributes)
-// })
-
-// chrome.runtime.onMessage.addListener()
-
-// symbol can be: exponential, romanize, extra life, 5 stars    
-// sort comments by: market cap | most recent first | most recent last
-// on load, ask the run time what the state is...
-
+/* right now I'm only ever updating an attribute on the body and letting CSS do the rest */
+/* this is changes that occur via popup */
+/* all other actions are triggered by mutation events */
 function updateAttributes(newState){
     Object.entries(newState).map(([key, val]) => {
-        if(/exp[1234]/.test(key)){
-            setBoolean(document.body, key, val)
-        } else if(/nofinance/.test(key)){
-            setBoolean(document.body, key, val)
-        } else if(/nocap/.test(key)){
-            setBoolean(document.body, key, val)
+        switch(key){
+            case 'mood':
+                let currentMood = document.body.getAttribute('mood')
+                if(currentMood && val != currentMood){ location.reload() }
+            case 'nometrics':
+
+            case 'nocap':
+            case 'nobalance':
+            case 'noleaders':
+            case 'noprice':
+            case 'noblchk': 
+            default:
+                setBoolean(document.body, key, val)
+                // /exp[1234]/.test(key) && setBoolean(document.body, key, val)
         }
     })
 }
@@ -67,20 +39,73 @@ function setBoolean(target, key, val){
         target.removeAttribute(key)
     }
 }
-// UPDATE THE TITLE TEXT
+
+// on updateAttributes, if the attribute is mood, refresh the page...
+// Later, I can pack all the different modes as psuedo elements and switch more seamlessly...
+function MoneyInWhatMood(price, int, exp){
+    let mood = document.body.getAttribute("mood")
+    // concat is just doing an emoji compatible padStart (❤️.length == 2), padStart hated that
+    // maybe if I import leftPad my issue can be solved...
+    let concat = (string, times) => times == 1 ? string : string + concat(string, --times)
+
+    const moods = {
+        'red hearts': '❤️',
+        'gold stars': '⭐',
+        'diamondhands': '💎',
+        'dollar sign': '$',
+        'bananas': '🍌'
+    }    
+    switch(mood){
+        case 'red hearts': 
+        case 'dollar sign':
+        case 'diamondhands':
+        case 'gold stars':
+        case 'bananas':
+            // return " ".padStart(exp + 1, moods[mood])
+            return concat(moods[mood], exp)
+        case 'romanize':
+            return romanize(int)
+        case 'internetpts':
+            return int
+        default:
+            return price
+        // maybe case custom: grab the custom attribute off of body?
+        // can 'content' of a psuedo element be var var var var ? to allow any emoji set as css variable?
+    }
+}
+
+function concat(string, times){
+    if(times == 1){
+        return string
+    } else {
+        return string + concat(string, --times)
+    }
+}
+
+
+
 function mutatePrice(priceHolder, target){
-    let int = parseInt(priceHolder.innerText.replace(',','').match(/\d+/))
+    let price = priceHolder.innerText
+    console.log("PRICE", price)
+    let int = parseInt(price.replace(',','').match(/\d+/))
     let exp = parseInt(Math.max(1, Math.log10(int)))
-    priceHolder.innerText = " ".padStart(exp + 1, "$") // replace according to current settings, maybe an emoji or whathaveyou
+    priceHolder.innerText = " " + MoneyInWhatMood(price, int, exp) + " " // replace according to current settings, maybe an emoji or whathaveyou
+    priceHolder.setAttribute("tag", "price")
     target && target.setAttribute("exp", exp)
 }
 
 function mutateComment(node){
-    console.log("COMMENT", node)
     mutatePrice(
         node.querySelector(".feed-post__coin-price-holder"),
         node.parentElement.parentElement.parentElement
     )
+    node.querySelectorAll("feed-post-icon-row i").forEach(icon => {
+        /* replace all the text with tagged spans so I can hide them */
+        let span = document.createElement('span')
+        span.setAttribute("tag","metric")
+        span.textContent = icon.parentElement.textContent.trim()
+        icon.parentElement.replaceChild(span, icon.nextSibling)
+    })
     // from this node, one node up should have its exp attribute set so it can be shown and hidden
 }
 // Profile : Posts | Creator Coin
@@ -90,14 +115,6 @@ function mutateComment(node){
 // [inprogress]:last-child {visibility: hidden} 
 function mutateFollowers(node){
     // hide everything, count up creator coins...
-}
-
-
-function hideMarketCap(node){
-    // maybe just add an attribute that hides based on CSS hidemarketcap = true false
-    // node.firstElementChild.lastElementChild.style.display = 'none'
-    node.firstElementChild.lastElementChild.setAttribute("marketcap", true)
-    // instead of setting it none, I'll tag 
 }
 
 function mutateProfilePrice(node){
@@ -114,10 +131,23 @@ function mutateInbox(node){
     // Array.from(node.children, child => 
 }
 
+
 function updateTitleText(){
     let suffix = " - BitClout"
     let [route, subroute] = location.pathname.split('/').slice(1)
+    console.log([route, subroute])
     switch(route){
+        case 'inbox':
+            if(!subroute) document.querySelector("messages-thread").firstChild.click()
+            else document.title =  "Inbox: " + subroute + suffix
+        break
+        case 'wallet':
+            document.title = "Wallet" + suffix
+        break
+        case 'browse':
+            let browsingContext = location.search.match(/feedTab=(\w+)/)
+            document.title = browsingContext ? (browsingContext[1] + " Timeline" + suffix) : ("Home" + suffix)
+        break
         case 'u':
             document.title = subroute + suffix
         break
@@ -150,9 +180,14 @@ function tagFinanceButtons(node){
 
 // It seems on navigate I unload and reload a new app-root, so to catch this I need an observer on the body
 // on page change, well see how it looks on change...
+let lastLocation = null
+
 new MutationObserver((mutationsList, observer) => {
     // anytime a mutatution has occured, check the location.href and update the document.title
-    updateTitleText()
+    if(location.href != lastLocation){
+        lastLocation = location.href
+        updateTitleText()
+    }
     mutationsList.map(mutation => {
         console.log(mutation.addedNodes)
         // I'll need a function that responds to every mutation, and first checks location.href to filter down 
@@ -161,17 +196,35 @@ new MutationObserver((mutationsList, observer) => {
         Array.from(mutation.addedNodes).map(node => {
             // switch based on location, use if else
             if(/js-feed-post/.test(node.className)){ mutateComment(node) }
-            if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
-            // if U and not ?Buy
-            if(/creator-profile-top-card/i.test(node.tagName)){ hideMarketCap(node), mutateProfilePrice(node)}
-            if(/search-bar__results-dropdown/.test(node.parentNode.parentNode.className)){ mutateSearchDropdown(node)}
-            // If the node is a link to the profile ? 
-            if(node.href && node.href.includes(location.pathname)){ mutateFollowers(node) }
-            if(/global__nav__inner/.test(node.className)){ tagFinanceButtons(node) }
+            
+            // if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
+            else if(node.classList && node.classList.contains("modal-backdrop")){ mutateComment(node.nextElementSibling)}
+            else if(/creator-profile-top-card/i.test(node.tagName)){ mutateProfilePrice(node)}
+            /* these are annoying, I was trying to nail down the case of switching between Global and Following, and changing screen width */
+            else if(node.previousElementSibling && "TAB_SELECTOR" === node.previousElementSibling.tagName){
+                Array.from(node.children, child => {
+                    mutateComment(child.querySelector('.js-feed-post'))
+                })
+            }
+            else if("TAB_SELECTOR" === node.tagName){
+                Array.from(node.nextElementSibling.children, child => {
+                    mutateComment(child.querySelector('.js-feed-post'))
+                })
+            }
+            else if(node.parentElement && "RIGHT-BAR-CREATORS-LEADERBOARD" == node.parentElement.tagName){
+                mutatePrice(node.lastChild)
+            }
+            // else if(node.href && node.href.includes(location.pathname)){ mutateFollowers(node) }
+            // else if(/global__nav__inner/.test(node.className)){ tagFinanceButtons(node) }
             // inbox HREF coin price
-            if(node.href && /\/u\/.*\/buy$/.test(node.href)){
+            else if(node.href && /\/u\/.*\/buy$/.test(node.href)){
                 // mutateInboxPrice()
             }
+            else if(node.parentNode
+                    && node.parentNode.parentNode 
+                    && /search-bar__results-dropdown/.test(node.parentNode.parentNode.className))
+                    { mutateSearchDropdown(node) }
+
             // if INBOX
             // if(/^messages-thread.*ng-star-inserted/i.test(node.tagName)){ mutateInbox(node)}
         })
@@ -181,15 +234,8 @@ new MutationObserver((mutationsList, observer) => {
     subtree: true
 })
 
-// how about on location 
-
 // As elements are headed to the screen, they are filtered down to those of interest and processed right away
 // Maybe as I add jobs to the schedule I can set an attribute of 'done' and hide everything with done=0 
-
-// if it's easy enough to just recurse over a list and then in the base case, set 'active' to false,
-// and then on the event of page mutations, I push new content to the array and I check if its active, if its not then I call kind of a new job-crawler, iterates over array of items to process.
-// what was that rope data structure again?
-// I contend that all social media has you addicted waiting to see if someone likes you or not. This is quantifying that attention and expectation into a concrete symbol. It may force people over the edge and you have to practice identifying with the collective and run your identity separtely. Psychologically harmful to some.
 
 // Two disclaimers
 // This while have harmful pscyhological effects on a lot of people 
@@ -203,25 +249,6 @@ new MutationObserver((mutationsList, observer) => {
 
 // so this alerts me of the page changing... I don't yet know if new content exists at this point
 
-// new MutationObserver((mutationsList, observer) => {
-//     mutationsList.map(mutation => {
-//         console.log("BODY", mutation.addedNodes)
-//         console.log("BODY", mutation.removedNodes)
-//     })
-// }).observe(document.body.firstChild, {
-//     childList: true
-// })
-
-// I guess the /u/ page is just one step removed from the /browse page with an extra wrapper under the nextElementSibling.firstChild.children something like that
-// Array.from(
-//     document.querySelector('tab-selector').nextElementSibling.children,
-//     cloutpost => {
-//         console.log(cloutpost)
-//         // ... if cloutpost already has int and exp, then skip a branch and just make sure current settings are applied
-
-//     }
-// )
-
 /*
 Maybe load the CSS first so that the price isn't shown at all until I set the exponent and perform the string replacement
 
@@ -234,3 +261,55 @@ Yes when you're on someone's profile, it would be ideal if I could see the top c
 
 Let's set an attribute for "exponent" so after I grab the integer,
 */
+// Credit to Steven Levithan 
+// https://stackoverflow.com/questions/9083037/convert-a-number-into-a-roman-numeral-in-javascript
+// http://blog.stevenlevithan.com/archives/javascript-roman-numeral-converter
+// function romanize (num) {
+//     if (isNaN(num))
+//         return NaN;
+//     var digits = String(+num).split(""),
+//         key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
+//                "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
+//                "","I","II","III","IV","V","VI","VII","VIII","IX"],
+//         roman = "",
+//         i = 3;
+//     while (i--)
+//         roman = (key[+digits.pop() + (i * 10)] || "") + roman;
+//     return Array(+digits.join("") + 1).join("M") + roman;
+// }
+
+function romanize(num) {
+    var lookup = {
+        "ↈ": 100000,
+        "ↇ": 50000,
+        "ↂ": 10000,
+        "ↁ": 5000,
+        M:1000,
+        CM:900,
+        D:500,
+        CD:
+        400,
+        C:100,
+        XC:90,
+        L:50,
+        XL:40,
+        X:10,
+        IX:9,
+        V:5,
+        IV:4,
+        I:1
+    }
+    var roman = ''
+    for (var i in lookup ) {
+      while ( num >= lookup[i] ) {
+        roman += i;
+        num -= lookup[i];
+      }
+    }
+    return roman;
+  }
+
+// 5,000   ↁ  V̅
+// 10,000  ↂ  X̅	
+// 50,000  ↇ L̅
+// 100,000 ↈ C̅

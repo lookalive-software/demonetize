@@ -15,39 +15,49 @@ summary {
   padding: 0 8px;
 }
 
+fieldset label {
+  display: block;
+}
+select {
+  float: right;
+  margin-top: 5px;
+}
+
 /* mood needs to rewrite a top level var */
-body[mood="money"] {
+body {
   --exp1: "$";
   --exp2: "$$";
   --exp3: "$$$";
   --exp4: "$$$$";
 }
 
-body[mood="diamonds"] {
+/* body[mood="diamonds"] {
   --exp1: "💎";
   --exp2: "💎💎";
   --exp3: "💎💎💎";
   --exp4: "💎💎💎💎";
-}
+} */
 /* romanize will rewrite, but it still tags the posts by exponent so they can be sorted*/
 body[mood="romanize"] {
   --exp1: "I";
-  --exp2: "X";
-  --exp3: "C";
-  --exp4: "M";
+  --exp2: "C";
+  --exp3: "M";
+  --exp4: "ↂ";
 }
 /* in the future, it might be useful to stretch the ranges instead of just x10...*/
 /* regardless, these variables are just in the popup css, so they'll be hardcoded in the replacement algo... not psuedo elements */
 /* maybe in the future this could be a css switch based on mood, the content of the after tag determined by exp...
 /* and keeping the original value in tact to read again */
 
-#all[type="checkbox"] {
-  float: right;
-}
-
-section {
+section#pricefilter {
   display: flex;
   justify-content: space-evenly;
+  margin-top: 5px;
+}
+
+[noprice] [for="mood"] {
+  pointer-events: none;
+  opacity: 0.4;
 }
 
 /* in order to change the contents of the checkboxes, just use content css rules */
