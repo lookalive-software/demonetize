@@ -67,6 +67,7 @@ html[invert] {
 [invert] .holdings__avatar,
 [invert] .manage-follows__avatar,
 [invert] .feed-create-comment-form__avatar,
+[invert] .creator-profile-details__hodler-avatar,
 [invert] img {
     filter: invert(1)  hue-rotate(-100deg);
 }
