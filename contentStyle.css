@@ -54,7 +54,7 @@ creator-profile-top-card > div > div:nth-child(4){
 .global__container {
     background-color: white;
 }
-body[invert] {
+html[invert] {
     filter: invert(1) hue-rotate(100deg);
 }
 
@@ -64,11 +64,14 @@ body[invert] {
 [invert] .right-bar-creators-leaderboard__creator-avatar,
 [invert] .feed-create-post__avatar,
 [invert] .message__avatar,
+[invert] .holdings__avatar,
+[invert] .manage-follows__avatar,
+[invert] .feed-create-comment-form__avatar,
 [invert] img {
     filter: invert(1)  hue-rotate(-100deg);
 }
 /* leave the logo alone */
-[invert] [href="/browse"] img {
+[invert] [href*="/browse"] img {
     filter: none;
 }
 

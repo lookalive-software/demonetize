@@ -1,31 +1,33 @@
-Major fixes:
-    Updates the Title Text so back buttons works
-    Show Shareholders instead of Followers
-        user page -> tab selector -> click last child, count...
+Hot fixes for bitclout.com bugs:
+    Updates the Title Text so back button is more useful
+
 
 OPTIONS:
-    hide creators__balance-box (true)
-    hide profile_market_cap (true)
-    hide social_counters
+    On Every Page:
+        hide Hide Buy/Send/Wallet buttons on left sidebar
+        hide Hide Your BitClout Balance / Price Ticker
+        hide Top Weekly Leaderboard
+        hide Blue Check icons
+        hide All Prices (exludes Wallet page)
+        choose price style: roman numerals, banana emojis, etc
+        invert colors (lazy man's dark mode)
+    On comments:
+        hide comment / reclout / like / time numbers
+    On Profile Pages:
+        hide Market Cap details
+        hide the Followers count
+        hide the Buy / Sell buttons
+    On comments and follower lists:
+        Filter according to price magnitude (below 100, 1000, 10000$)
+
+TODO:
+    inject finance stats into wallet page
+    Show Shareholder Count instead of Followers on profile pages
+    replace leaderboard with a kind of "top 8 friends" speeddial
+    somehow grab the first frame of GIF as a blob and throw a pause button on those to prevent auto-playing seizure-gifs. Looks like https://github.com/benwiley4000/gif-frames will allow this.
 
 
-How does a dropdown work?
-mood=hearts|stars|dollar signs|diamonds
-For partial barchart of hearts and diamonds and stars, use Log10 as percentage witdth that's shown. 
+Bugs:
+Right now in the profile's creator coins market values are truncated like 2K and as integers only display 2000 or MM -- would be good to use spot price to recalculate market values to more sig figs
 
-Which options rewrite the page?
-mood
-show sharehodlers -- has to mark the page as active, then go count...
-
-
-There will be CSS to only show feed posts when they have attributes matching the body
-
-[exp1] [exp="1"] { display: initial }
-
-each feed post is tagged with an attribute of what exponent the post is, allows easy css show and hide.
-
-
-Anytime a new message comes in, the corresponding function is called to update its little corner of the markup (if we're even on that page -- just skip if location doesn't match)
-
-So for "show market cap" I would just update an attribute on document.body
-But for "price style" I would have to reload the page and start re-writing all the coinprice-holders with hearts and diamonds and whatnot. Maybe a "random" to mix them up.
+Oh, there's a strange behavoir when I apply the invert filter, the sidebars no longer are scrolled down to the global feed. Like a forced repaint affected the scroll position or something...

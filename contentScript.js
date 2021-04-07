@@ -9,6 +9,29 @@ chrome.storage.onChanged.addListener((changes) => {
     })
 })
 
+function updateAttributes(newState){
+    Object.entries(newState).map(([key, val]) => {
+        switch(key){
+            case 'mood':
+                let currentMood = document.lastChild.getAttribute('mood')
+                if(currentMood && val != currentMood){ location.reload() }
+            case 'nometrics':
+            case 'nocap':
+            case 'nobalance':
+            case 'noleaders':
+            case 'noprice':
+            case 'noblchk': 
+            case 'invert':
+            default:
+                if(val){
+                    document.lastChild.setAttribute(key, val)
+                } else {
+                    document.lastChild.removeAttribute(key)
+                }
+        }
+    })
+}
+
 new MutationObserver(mutationsList => {
     // anytime a mutatution has occured,
     // check the location.href and update the document.title
@@ -17,21 +40,19 @@ new MutationObserver(mutationsList => {
         updateTitleText()
     }
     mutationsList.map(mutation => {
-        // console.log(mutation.addedNodes)
-        Array.from(mutation.addedNodes).map(node => {
-            if(/js-feed-post/.test(node.className))
+        console.log(mutation.addedNodes)
+        Array.from(mutation.addedNodes, function(node){
+            if(!node.classList || !node.parentElement)
             {
-                mutateComment(node)
+                 /* early exit: if it's a text node or an orphaned node just forget it */
+                return null
             }
-            // if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
-            else if(node.classList && node.classList.contains("modal-backdrop"))
-            { 
-                mutateComment(node.nextElementSibling)
-            }
-            else if(/creator-profile-top-card/i.test(node.tagName))
+            // PROFILE
+            else if("CREATOR-PROFILE-TOP-CARD" == node.tagName)
             {
                 mutateProfilePrice(node)
             }
+            // MAIN FEED
             /* these are annoying, I was trying to nail down the case of switching between Global and Following, and changing screen width */
             else if(node.previousElementSibling && "TAB_SELECTOR" === node.previousElementSibling.tagName)
             {
@@ -45,23 +66,48 @@ new MutationObserver(mutationsList => {
                     mutateComment(child.querySelector('.js-feed-post'))
                 })
             }
-            else if(node.parentElement && "RIGHT-BAR-CREATORS-LEADERBOARD" == node.parentElement.tagName)
+            // if the node is a child of the creators leaderboard, its price is its lastChild
+            else if("RIGHT-BAR-CREATORS-LEADERBOARD" == node.parentElement.tagName)
             {
                 mutatePrice(node.lastChild)
             }
-            // else if(node.href && node.href.includes(location.pathname)){ mutateFollowers(node) }
-            // else if(/global__nav__inner/.test(node.className)){ tagFinanceButtons(node) }
-            // inbox HREF coin price
-            else if(node.href && /\/u\/.*\/buy$/.test(node.href)){
-                // mutateInboxPrice()
+            // if the node has a search-bar avatar as its firstChild, then its price is its lastChild
+            else if(node.firstElementChild && node.firstElementChild.classList.contains('search-bar__avatar'))
+            {
+                mutatePrice(node.lastElementChild)
             }
-
-            else if(location.search.includes('creator-coin')){
+            // INBOX
+            else if(location.pathname.startsWith('/inbox'))
+            {
+                if(node.firstElementChild && node.firstElementChild.classList.contains('messages-thread__avatar'))
+                {
+                    mutatePrice(node.lastElementChild.lastElementChild)
+                }
+                else if(node.classList.contains("messages-thread__border-radius") && endsWithPrice(node))
+                {
+                    mutatePrice(node)
+                }
+            }
+            // the creator-coin tab of the profile page, the rows that end with a price need their lastChild updated
+            else if(location.pathname.endsWith('followers') || location.pathname.endsWith('following'))
+            {
+                if(node.parentNode.parentNode
+                && node.parentNode.parentNode.parentNode
+                && node.parentNode.parentNode.parentNode.tagName == "MANAGE-FOLLOWS")
+                {
+                    mutateFollowers(node)
+                }
+            }
+            else if(location.pathname.startsWith('/u/') && location.search.includes('creator-coin'))
+            {
                 // ask for the text content of the node and find out if it ends with a price 
-                if(node.classList && node.classList.contains('row') && /\$\d+\.\d{2}K{0,1}$/.test(node.textContent.trim())){
+                if(node.classList && node.classList.contains('row') && endsWithPrice(node))
+                {
                     // OK, the node is the container row, the price is the lastChild
                     mutatePrice(node.lastElementChild)
-                    // console.log(node)
+                }
+                else if(node.previousElementSibling && "TAB-SELECTOR" === node.previousElementSibling.tagName){
+                    mutatePrice(node.children[1].lastChild.lastChild.lastChild)
                 }
             }
             // well it wasn't anything else, check if its the search bar
@@ -69,8 +115,15 @@ new MutationObserver(mutationsList => {
             //     && node.parentNode.parentNode 
             //     && /search-bar__results-dropdown/.test(node.parentNode.parentNode.className))
             //     { mutatePrice(node.lastElementChild) }
-            else if(node.firstElementChild && node.firstElementChild.classList.contains('search-bar__avatar')){
-                mutatePrice(node.lastElementChild)
+
+            else if(/js-feed-post/.test(node.className))
+            {
+                mutateComment(node)
+            }
+            // if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
+            else if(node.classList && node.classList.contains("modal-backdrop"))
+            { 
+                mutateComment(node.nextElementSibling)
             }
 
             // if INBOX
@@ -82,36 +135,19 @@ new MutationObserver(mutationsList => {
     subtree: true
 })
 
+
+function endsWithPrice(node){
+    return /\$[\d,]+\.\d{2}K{0,1}$/.test(node.textContent.trim())
+}
 /* right now I'm only ever updating an attribute on the body and letting CSS do the rest */
 /* this is changes that occur via popup */
 /* all other actions are triggered by mutation events */
-function updateAttributes(newState){
-    Object.entries(newState).map(([key, val]) => {
-        switch(key){
-            case 'mood':
-                let currentMood = document.body.getAttribute('mood')
-                if(currentMood && val != currentMood){ location.reload() }
-            case 'nometrics':
-            case 'nocap':
-            case 'nobalance':
-            case 'noleaders':
-            case 'noprice':
-            case 'noblchk': 
-            case 'invert':
-            default:
-                if(val){
-                    document.body.setAttribute(key, val)
-                } else {
-                    document.body.removeAttribute(key)
-                }                // /exp[1234]/.test(key) && setBoolean(document.body, key, val)
-        }
-    })
-}
+
 
 // on updateAttributes, if the attribute is mood, refresh the page...
 // Later, I can pack all the different modes as psuedo elements and switch more seamlessly...
 function MoneyInWhatMood(price, int, exp){
-    let mood = document.body.getAttribute("mood")
+    let mood = document.lastChild.getAttribute("mood")
     // concat is just doing an emoji compatible padStart (❤️.length == 2), padStart hated that
     // maybe if I import leftPad my issue can be solved...
     let concat = (string, times) => times <= 1 ? string : string + concat(string, --times)
@@ -143,8 +179,11 @@ function MoneyInWhatMood(price, int, exp){
 
 
 function mutatePrice(priceHolder, target){
+    if(priceHolder.getAttribute("tag")){
+        throw new Error("Same price mutated twice")
+    }
     let price = priceHolder.innerText
-    console.log("PRICE", price)
+    // console.log("PRICE", price)
     let int = parseInt(price.replace(',','').match(/\d+/))
     if(price.includes('K')){ int *= 1000 }
     let exp = parseInt(Math.max(1, Math.log10(int)))
@@ -173,7 +212,10 @@ function mutateComment(node){
 // find posts / creator coin, click creator coin, count the list...
 // [inprogress]:last-child {visibility: hidden} 
 function mutateFollowers(node){
-    // hide everything, count up creator coins...
+    mutatePrice(
+        node.querySelector('.feed-post__coin-price-holder'),
+        node /* tag this node with an exp* attribute so my coin filter works */
+    )
 }
 
 function mutateProfilePrice(node){
