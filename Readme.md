@@ -19,22 +19,25 @@ Hot fixes for bitclout.com bugs:
     Updates the Title Text so back button is more useful
 
 OPTIONS:
-    - On Every Page:
-       - Hide Buy/Send/Wallet buttons on left sidebar
-       - Hide Your BitClout Balance / Price Ticker
-       - Hide Top Weekly Leaderboard
-       - Hide Blue Check icons
-       - Hide All Prices (exludes Wallet page)
-       - choose price style: roman numerals, banana emojis, etc
-       - invert colors (lazy man's dark mode)
-    - On comments:
-       - Hide comment / reclout / like / time numbers
-    - On Profile Pages:
-       - Hide Market Cap details
-       - Hide the Followers count
-       - Hide the Buy / Sell buttons
-    - On comments and follower lists:
-       - Filter according to price magnitude (below 100, 1000, 10000$)
+
+	* On Every Page:
+		* Hide Buy/Send/Wallet buttons on left sidebar
+		* Hide Your BitClout Balance / Price Ticker
+		* Hide Top Weekly Leaderboard
+		* Hide Blue Check icons
+		* Hide All Prices (exludes Wallet page)
+		* choose price style: roman numerals, banana emojis, etc
+		* invert colors (lazy man's dark mode)
+	* On comments:
+		* Hide comment / reclout / like / time numbers
+		* Force images to be shrink to fit their container
+	* On Profile Pages:
+		* Hide Market Cap details
+		* Hide the Followers count
+		* Hide the Buy / Sell buttons
+		* Hide the Public Key button
+	* On comments and follower lists:
+		* Filter according to price magnitude (below 100, 1000, 10000$)
 
 TODO:
     inject finance stats into wallet page
