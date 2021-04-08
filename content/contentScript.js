@@ -15,13 +15,15 @@ function updateAttributes(newState){
             case 'mood':
                 let currentMood = document.lastChild.getAttribute('mood')
                 if(currentMood && val != currentMood){ location.reload() }
-            case 'nometrics':
+            case 'nometric':
             case 'nocap':
+            case 'nokey':
             case 'nobalance':
             case 'noleaders':
             case 'noprice':
             case 'noblchk': 
             case 'invert':
+            case 'imgfix':
             default:
                 if(val){
                     document.lastChild.setAttribute(key, val)
@@ -40,8 +42,8 @@ new MutationObserver(mutationsList => {
         updateTitleText()
     }
     mutationsList.map(mutation => {
-        console.log(mutation.addedNodes)
         Array.from(mutation.addedNodes, function(node){
+            // console.log(node)
             if(!node.classList || !node.parentElement)
             {
                  /* early exit: if it's a text node or an orphaned node just forget it */
@@ -219,8 +221,14 @@ function mutateFollowers(node){
 }
 
 function mutateProfilePrice(node){
+    console.log("MUTATE PROFILE", node)
+    console.log("PRICE??",
+    node.firstElementChild.children[3].lastElementChild.querySelector('div').firstElementChild
+     )
     mutatePrice(
-        node.firstElementChild.children[3].lastElementChild.lastElementChild.firstElementChild
+        // node.firstElementChild.children[3].lastElementChild.lastElementChild.firstElementChild
+        // node.firstElementChild.children[3].lastElementChild.children[1].firstElementChild
+        node.firstElementChild.children[3].lastElementChild.querySelector('div').firstElementChild
     )
 }
 

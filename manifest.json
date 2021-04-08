@@ -1,7 +1,7 @@
  {
     "name": "Demonitize",
     "description": "Customize your BitClout experience -- price display, comment filtering, etc",
-    "version": "0.1.1",
+    "version": "0.1.3",
     "author": "@cdj",
     "manifest_version": 3,
     "background": {

@@ -1,4 +1,10 @@
-
+/*
+    Image hot fix
+*/
+[imgfix] img.feed-post__image {
+    max-height: 450px;
+    object-fit: contain;
+}
 
 /*
     Hide anything that has been assigned an exponential value
@@ -34,6 +40,7 @@
 [noprice] creator-profile-top-card [tag="price"] + div,
 
 [nofollow] creator-profile-top-card [href*="/followers"],
+[nokey] creator-profile-top-card [href*="/followers"] ~ span,
 /* this is the numbers next to the comment, reclout, heart, and link to post */
 [nometric] [tag="metric"]
 {

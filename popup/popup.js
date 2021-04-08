@@ -24,16 +24,6 @@ Array.from(
   )
 )
 
-// Array.from(
-//   document.querySelectorAll('[type="range"]'),
-//   ranges =>
-//   ranges.addEventListener('change',
-//     event => {
-//       chrome.storage.sync.set({[event.target.id]: event.target.value})
-//     }
-//   )
-// )
-
 function setBoolean(target, key, val){
   if(val){
       target.setAttribute(key, val)
@@ -45,7 +35,6 @@ function setBoolean(target, key, val){
 /**
  * When popup is opened, I have to ask for the keys and then make sure the form is up to date
  */
-
 chrome.storage.sync.get(["keys"], ({keys}) => {
   chrome.storage.sync.get(keys.split(' '), memory => {
     Object.entries(memory).map(([key, val]) => {
@@ -59,9 +48,11 @@ chrome.storage.sync.get(["keys"], ({keys}) => {
         'nofinance',
         'noblchk',
         'nobuy',
+        'nokey',
         'nofollow',
         'nometric',
-        'invert'
+        'invert',
+        'imgfix'
       ].includes(key)){
         document.getElementById(key).checked = val
       } else if([

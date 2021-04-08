@@ -1,10 +1,11 @@
 form {
-  width: 200px;
+  width: 235px;
 }
 
 fieldset {
   position: relative;
-  margin-top: 25px;
+  margin-top: 15px;
+  padding-top: 0.5em;
 }
 summary {
   position: absolute;
@@ -42,7 +43,7 @@ body[mood="romanize"] {
   --exp1: "I";
   --exp2: "C";
   --exp3: "M";
-  --exp4: "ↂ";
+  --exp4: "X̅";
 }
 /* in the future, it might be useful to stretch the ranges instead of just x10...*/
 /* regardless, these variables are just in the popup css, so they'll be hardcoded in the replacement algo... not psuedo elements */

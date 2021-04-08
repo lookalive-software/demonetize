@@ -10,18 +10,18 @@ let defaults = {
   "nofinance": false,
   "noblchk": false,
   "nobuy": false,
+  "nokey": false,
   "nofollow": false,
   "nometric": false,
   "mood": "dollar sign",
-  // "rotate": 0,
   "invert": false,
-  // "brightness": 1
+  "imgfix": true
 }
-// stuff an entire string of the names of all the keys so content and popup and grab the complete list of keys it needs to request
-// in order to sync with storage 
+// stuff an entire string of the names of all the keys 
+// so content and popup can grab the complete list of preferences
 defaults.keys = Object.keys(defaults).join(' ')
 
-// The first time popup and content are run, they will have some defaults to sync with
+// The first time popup and contentScript run, they will have some defaults to read
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.set(defaults)
 })
