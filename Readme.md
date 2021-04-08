@@ -40,11 +40,12 @@ OPTIONS:
 		* Filter according to price magnitude (below 100, 1000, 10000$)
 
 TODO:
-    inject finance stats into wallet page
-    Show Shareholder Count instead of Followers on profile pages
-    replace leaderboard with a kind of "top 8 friends" speeddial
-    somehow grab the first frame of GIF as a blob and throw a pause button on those to prevent auto-playing seizure-gifs. Looks like https://github.com/benwiley4000/gif-frames will allow this.
-    Replace hidden comments with a toggle that lets you display collapsed comments
+
+	* inject finance stats into wallet page
+	* Show Shareholder Count instead of Followers on profile pages
+	* replace leaderboard with a kind of "top 8 friends" speeddial
+	* somehow grab the first frame of GIF as a blob and throw a pause button on those to prevent auto-playing seizure-gifs. Looks like https://github.com/benwiley4000/gif-frames will allow this.
+	* Replace hidden comments with a toggle that lets you display collapsed comments
 
 
 Bugs:
@@ -53,11 +54,3 @@ Right now in the profile's creator coins market values are truncated eg "$2K" an
 Tab titles are a work-in-progress.
 
 The popup menu's style kind of falls apart when the user font size is changed from Medium
-
-Videos:
-Filter the follower/following lists based on coin price
-Filter the global feed based on coin price
-Switch between price styles while showing the leaderboard
-Show a profile and hide various features
-Show a profile and invert 
-
