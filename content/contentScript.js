@@ -199,13 +199,15 @@ function mutateComment(node){
         node.querySelector(".feed-post__coin-price-holder"),
         node.parentElement.parentElement.parentElement // tags comments with exp
     )
-    node.querySelectorAll("feed-post-icon-row i").forEach(icon => {
-        /* replace all the text with tagged spans so I can hide them */
-        let span = document.createElement('span')
-        span.setAttribute("tag","metric")
-        span.textContent = icon.parentElement.textContent.trim()
-        icon.parentElement.replaceChild(span, icon.nextSibling)
-    })
+    // replaced with CSS query in 0.1.4
+    // node.querySelectorAll("feed-post-icon-row i").forEach(icon => {
+    //     /* replace all the text with tagged spans so I can hide them */
+    //     console.log(icon)
+    //     // let span = document.createElement('span')
+    //     // span.setAttribute("tag","metric")
+    //     // span.textContent = icon.parentElement.textContent.trim()
+    //     // icon.parentElement.replaceChild(span, icon.nextSibling)
+    // })
 }
 
 // Profile : Posts | Creator Coin

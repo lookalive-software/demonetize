@@ -21,6 +21,21 @@
 [exp4] [exp="4"] {
     display: initial;
 }
+
+/*
+Allow hiding the numbers by setting the font color of the container to transparent, 
+and color of the icon element back to initial
+*/
+[nometric] feed-post-icon-row > div > div
+{
+    color: transparent;
+}
+[nometric] feed-post-icon-row i
+{
+    color: initial;
+}
+
+
 /* These are all targeted elements toggled by a checkbox */
 /* this is the top right hand "BitClout Price" + "Your BitClout" */
 [nobalance] .right-bar-creators__balance-box,
@@ -41,12 +56,7 @@
 
 [nofollow] creator-profile-top-card [href*="/followers"],
 [nokey] creator-profile-top-card [href*="/followers"] ~ span,
-/* this is the numbers next to the comment, reclout, heart, and link to post */
-[nometric] [tag="metric"]
-{
-    display: none !important;
-    /* have to override some inline styles */
-}
+
 /* buy button on profile page */
 [nobuy] creator-profile-top-card .btn-primary[href*="/buy"]
 {
