@@ -48,7 +48,7 @@ TODO:
 
 ### Installation
 
-Demonetize will be available in the Chrome Web Store pending review. If you would like to use Demonetize today, download and extract the files from the [latest release](https://github.com/lookalive-software/demonitize/releases/), then open [chrome://extensions/](chrome://extensions/) and click the slider in the upper right-hand corner enabling "Developer mode" -- then click "Load unpacked" and 
+Demonetize will be available in the Chrome Web Store pending review. If you would like to use Demonetize today, download and extract the files from the [latest release](https://github.com/lookalive-software/demonetize/releases/), then open [chrome://extensions/](chrome://extensions/) and click the slider in the upper right-hand corner enabling "Developer mode" -- then click "Load unpacked" and 
 
 ### Credit where credit is due
 

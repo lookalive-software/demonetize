@@ -1,5 +1,5 @@
  {
-    "name": "Demonitize",
+    "name": "Demonetize",
     "description": "Customize your BitClout experience -- price display, comment filtering, etc",
     "version": "0.1.4",
     "author": "@cdj",
@@ -8,21 +8,21 @@
         "service_worker": "background/background.js"
     },
     "permissions": ["storage", "scripting"],
-    "homepage_url": "https://bitclout.com/u/demonitize",
+    "homepage_url": "https://bitclout.com/u/demonetize",
     "action": {
         "default_popup": "popup/popup.html",
         "default_icon": {
-            "16": "/images/demonitize16.png",
-            "32": "/images/demonitize32.png",
-            "48": "/images/demonitize48.png",
-            "128": "/images/demonitize128.png"
+            "16": "/images/demonetize16.png",
+            "32": "/images/demonetize32.png",
+            "48": "/images/demonetize48.png",
+            "128": "/images/demonetize128.png"
         }
     },
     "icons": {
-        "16": "/images/demonitize16.png",
-        "32": "/images/demonitize32.png",
-        "48": "/images/demonitize48.png",
-        "128": "/images/demonitize128.png"
+        "16": "/images/demonetize16.png",
+        "32": "/images/demonetize32.png",
+        "48": "/images/demonetize48.png",
+        "128": "/images/demonetize128.png"
     },
     "content_scripts": [
         {
