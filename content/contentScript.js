@@ -152,7 +152,7 @@ function MoneyInWhatMood(price, int, exp){
     let mood = document.lastChild.getAttribute("mood")
     // concat is just doing an emoji compatible padStart (❤️.length == 2), padStart hated that
     // maybe if I import leftPad my issue can be solved...
-    let concat = (string, times) => times <= 1 ? string : string + concat(string, --times)
+    let repeat = (string, times) => times <= 1 ? string : string + repeat(string, --times)
 
     const moods = {
         'red hearts': '❤️',
@@ -167,7 +167,7 @@ function MoneyInWhatMood(price, int, exp){
         case 'diamondhands':
         case 'gold stars':
         case 'bananas':
-            return concat(moods[mood], exp)
+            return repeat(moods[mood], exp)
         case 'romanize':
             return romanize(int)
         case 'internetpts':
@@ -182,7 +182,7 @@ function MoneyInWhatMood(price, int, exp){
 
 function mutatePrice(priceHolder, target){
     if(priceHolder.getAttribute("tag")){
-        throw new Error("Same price mutated twice")
+        return console.error("Same price mutated twice")
     }
     let price = priceHolder.innerText
     // console.log("PRICE", price)
@@ -199,15 +199,6 @@ function mutateComment(node){
         node.querySelector(".feed-post__coin-price-holder"),
         node.parentElement.parentElement.parentElement // tags comments with exp
     )
-    // replaced with CSS query in 0.1.4
-    // node.querySelectorAll("feed-post-icon-row i").forEach(icon => {
-    //     /* replace all the text with tagged spans so I can hide them */
-    //     console.log(icon)
-    //     // let span = document.createElement('span')
-    //     // span.setAttribute("tag","metric")
-    //     // span.textContent = icon.parentElement.textContent.trim()
-    //     // icon.parentElement.replaceChild(span, icon.nextSibling)
-    // })
 }
 
 // Profile : Posts | Creator Coin
