@@ -5,7 +5,7 @@
     "author": "@cdj",
     "manifest_version": 3,
     "background": {
-        "service_worker": "background/background.js"
+        "service_worker":"background.js"
     },
     "permissions": ["storage"],
     "homepage_url": "https://bitclout.com/u/demonetize",
@@ -27,7 +27,7 @@
     "content_scripts": [
         {
             "matches": ["https://bitclout.com/*"],
-            "run_at": "document_end",
+            "run_at": "document_idle",
             "js": ["content/contentScript.js"],
             "css" : ["content/contentStyle.css"]
         }
