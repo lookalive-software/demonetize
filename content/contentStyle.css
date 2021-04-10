@@ -57,6 +57,9 @@ and color of the icon element back to initial
 /* followers on profile page */
 [nofollow] creator-profile-top-card [href*="/followers"],
 [nokey] creator-profile-top-card [href*="/followers"] ~ span,
+/* hide reclouts and spam */
+[nospam] .spam,
+[noreps] .repost,
 /* buy button on profile page */
 [nobuy] creator-profile-top-card .btn-primary[href*="/buy"]
 {

@@ -15,7 +15,9 @@ let defaults = {
   "nometric": false,
   "mood": "dollar sign",
   "invert": false,
-  "imgfix": true
+  "imgfix": true,
+  "norep": false,
+  "nospam": true
 }
 // stuff an entire string of the names of all the keys 
 // so content and popup can grab the complete list of preferences

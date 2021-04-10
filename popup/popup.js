@@ -52,7 +52,9 @@ chrome.storage.sync.get(["keys"], ({keys}) => {
         'nofollow',
         'nometric',
         'invert',
-        'imgfix'
+        'imgfix',
+        'nospam',
+        'noreps'
       ].includes(key)){
         document.getElementById(key).checked = val
       } else if([

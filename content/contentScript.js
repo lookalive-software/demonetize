@@ -24,6 +24,8 @@ function updateAttributes(newState){
             case 'noblchk': 
             case 'invert':
             case 'imgfix':
+            case 'nospam':
+            case 'noreps':
             default:
                 if(val){
                     document.lastChild.setAttribute(key, val)
@@ -118,12 +120,12 @@ new MutationObserver(mutationsList => {
             //     && /search-bar__results-dropdown/.test(node.parentNode.parentNode.className))
             //     { mutatePrice(node.lastElementChild) }
 
-            else if(/js-feed-post/.test(node.className))
+            else if(node.classList.contains('js-feed-post'))
             {
                 mutateComment(node)
             }
             // if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
-            else if(node.classList && node.classList.contains("modal-backdrop"))
+            else if(node.classList.contains("modal-backdrop"))
             { 
                 mutateComment(node.nextElementSibling)
             }
@@ -195,9 +197,35 @@ function mutatePrice(priceHolder, target){
 }
 
 function mutateComment(node){
+    console.log("COMMENT", node)
+
+
+    // starting from the div.js-feed-post go up two...
+    // if we're on a /u/ page, this is the element we need to tag with exp
+    let commentContainer = node.parentElement.parentElement 
+    // if the identified comment container is actually quoted content, don't set the exp attribute for content filtering
+    if(commentContainer.classList.contains('feed-post__quoted-content')){
+        commentContainer = null
+    } else if(!location.pathname.startsWith('/u/')){
+        commentContainer = commentContainer.parentElement
+    }
+
+
+    if(node.querySelectorAll('i.icon-repost').length === 3){
+        commentContainer.classList.add("repost")
+        if(node.querySelector('[tabindex]')
+               .textContent
+               .toLowerCase()
+               .includes('reclout'))
+        {
+            commentContainer.classList.add("spam")
+        }
+    }
+
+    // maybe mutate price should just return {int, exp, price} and then I can decide what to do with it...
     mutatePrice(
         node.querySelector(".feed-post__coin-price-holder"),
-        node.parentElement.parentElement.parentElement // tags comments with exp
+        commentContainer
     )
 }
 
