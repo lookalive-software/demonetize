@@ -52,15 +52,15 @@ and color of the icon element back to initial
 /* blue checkmarks */
 [noblchk] i.fa-check-circle,
 [noprice] [tag="price"],
+/* price on profile page and creator coins label in the div next to it */
 [noprice] creator-profile-top-card [tag="price"] + div,
-
+/* followers on profile page */
 [nofollow] creator-profile-top-card [href*="/followers"],
 [nokey] creator-profile-top-card [href*="/followers"] ~ span,
-
 /* buy button on profile page */
 [nobuy] creator-profile-top-card .btn-primary[href*="/buy"]
 {
-    display: none;
+    display: none !important;
 }
 /* hot fix because deleting the button moves things around */
 creator-profile-top-card > div > div:nth-child(4){
