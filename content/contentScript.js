@@ -1,3 +1,6 @@
+// I'll add some way to toggle debugging mode somehow later...
+let debugging = true
+let debug = message => debugging && console.warn(message)
 
 chrome.storage.sync.get(["keys"], ({keys}) => {
     chrome.storage.sync.get(keys.split(' '), updateAttributes)
@@ -48,24 +51,28 @@ new MutationObserver(mutationsList => {
             // console.log(node)
             if(!node.classList || !node.parentElement)
             {
+                debug("branch 0")
                  /* early exit: if it's a text node or an orphaned node just forget it */
                 return null
             }
             // PROFILE
             else if("CREATOR-PROFILE-TOP-CARD" == node.tagName)
             {
+                debug("branch 1")
                 mutateProfilePrice(node)
             }
             // MAIN FEED
             /* these are annoying, I was trying to nail down the case of switching between Global and Following, and changing screen width */
             else if(node.previousElementSibling && "TAB_SELECTOR" === node.previousElementSibling.tagName)
             {
+                debug("branch 2")
                 Array.from(node.children, child => {
                     mutateComment(child.querySelector('.js-feed-post'))
                 })
             }
             else if("TAB_SELECTOR" === node.tagName)
             {
+                debug("branch 3")
                 Array.from(node.nextElementSibling.children, child => {
                     mutateComment(child.querySelector('.js-feed-post'))
                 })
@@ -73,44 +80,54 @@ new MutationObserver(mutationsList => {
             // if the node is a child of the creators leaderboard, its price is its lastChild
             else if("RIGHT-BAR-CREATORS-LEADERBOARD" == node.parentElement.tagName)
             {
+                debug("branch 4")
                 mutatePrice(node.lastChild)
             }
             // if the node has a search-bar avatar as its firstChild, then its price is its lastChild
             else if(node.firstElementChild && node.firstElementChild.classList.contains('search-bar__avatar'))
             {
+                debug("branch 5")
                 mutatePrice(node.lastElementChild)
             }
             // INBOX
             else if(location.pathname.startsWith('/inbox'))
             {
+                debug("branch 6..")
                 if(node.firstElementChild && node.firstElementChild.classList.contains('messages-thread__avatar'))
                 {
+                    debug("branch 6.1")
                     mutatePrice(node.lastElementChild.lastElementChild)
                 }
                 else if(node.classList.contains("messages-thread__border-radius") && endsWithPrice(node))
                 {
+                    debug("branch 6.2")
                     mutatePrice(node)
                 }
             }
             // the creator-coin tab of the profile page, the rows that end with a price need their lastChild updated
             else if(location.pathname.endsWith('followers') || location.pathname.endsWith('following'))
             {
+                debug("branch 7..")
                 if(node.parentNode.parentNode
                 && node.parentNode.parentNode.parentNode
                 && node.parentNode.parentNode.parentNode.tagName == "MANAGE-FOLLOWS")
                 {
+                    debug("branch 7.1")
                     mutateFollowers(node)
                 }
             }
             else if(location.pathname.startsWith('/u/') && location.search.includes('creator-coin'))
             {
+                debug("branch 8..")
                 // ask for the text content of the node and find out if it ends with a price 
                 if(node.classList && node.classList.contains('row') && endsWithPrice(node))
                 {
+                    debug("branch 8.1")
                     // OK, the node is the container row, the price is the lastChild
                     mutatePrice(node.lastElementChild)
                 }
                 else if(node.previousElementSibling && "TAB-SELECTOR" === node.previousElementSibling.tagName){
+                    debug("branch 8.2")
                     mutatePrice(node.children[1].lastChild.lastChild.lastChild)
                 }
             }
@@ -122,13 +139,15 @@ new MutationObserver(mutationsList => {
 
             else if(node.classList.contains('js-feed-post'))
             {
+                debug("branch 9")
                 mutateComment(node)
             }
             // if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
-            else if(node.classList.contains("modal-backdrop"))
-            { 
-                mutateComment(node.nextElementSibling)
-            }
+            // else if(node.classList.contains("modal-backdrop"))
+            // { 
+            //     debug("branch 10")
+            //     mutateComment(node.nextElementSibling)
+            // }
 
             // if INBOX
             // if(/^messages-thread.*ng-star-inserted/i.test(node.tagName)){ mutateInbox(node)}
@@ -183,6 +202,9 @@ function MoneyInWhatMood(price, int, exp){
 
 
 function mutatePrice(priceHolder, target){
+    debug("mutate price")
+    debug(priceHolder)
+
     if(priceHolder.getAttribute("tag")){
         return console.error("Same price mutated twice")
     }
@@ -197,8 +219,8 @@ function mutatePrice(priceHolder, target){
 }
 
 function mutateComment(node){
+    // this is assuming we're at js-feed-post level
     console.log("COMMENT", node)
-
 
     // starting from the div.js-feed-post go up two...
     // if we're on a /u/ page, this is the element we need to tag with exp

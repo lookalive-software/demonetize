@@ -19,7 +19,7 @@
 [exp2] [exp="2"],
 [exp3] [exp="3"],
 [exp4] [exp="4"] {
-    display: initial;
+    display: inherit;
 }
 
 /*
