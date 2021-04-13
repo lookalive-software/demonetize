@@ -1,6 +1,6 @@
 // I'll add some way to toggle debugging mode somehow later...
 let debugging = false
-let debug = message => debugging && console.warn(message)
+let debug = message => debugging && console.log(message)
 
 chrome.storage.sync.get(["keys"], ({keys}) => {
     chrome.storage.sync.get(keys.split(' '), updateAttributes)
@@ -223,14 +223,23 @@ function mutateComment(node){
     // if we're on a /u/ page, this is the element we need to tag with exp
     let commentContainer = node.parentElement.parentElement 
     // if the identified comment container is actually quoted content, don't set the exp attribute for content filtering
-    if(commentContainer.classList.contains('feed-post__quoted-content')){
+    if(commentContainer.classList.contains('feed-post__quoted-content'))
+    {
+        debug("MUTATECOMMENT ignored container for quoted content")
         commentContainer = null
-    } else if(!location.pathname.startsWith('/u/')){
+    }
+    else if(commentContainer.parentElement.tagName == "COMMENT-MODAL")
+    {
+        debug("MUTATECOMMENT ignored container for comment modal")
+        commentContainer = null
+    }
+    else if(!location.pathname.startsWith('/u/'))
+    {
         commentContainer = commentContainer.parentElement
     }
 
-
-    if(node.querySelectorAll('i.icon-repost').length === 3){
+    // we have identified a comment container, apply spam filter
+    if(commentContainer && node.querySelectorAll('i.icon-repost').length === 3){
         commentContainer.classList.add("repost")
         if(node.querySelector('[tabindex]')
                .textContent
