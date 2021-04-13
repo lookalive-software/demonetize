@@ -1,5 +1,5 @@
 // I'll add some way to toggle debugging mode somehow later...
-let debugging = true
+let debugging = false
 let debug = message => debugging && console.warn(message)
 
 chrome.storage.sync.get(["keys"], ({keys}) => {
@@ -48,7 +48,6 @@ new MutationObserver(mutationsList => {
     }
     mutationsList.map(mutation => {
         Array.from(mutation.addedNodes, function(node){
-            // console.log(node)
             if(!node.classList || !node.parentElement)
             {
                 debug("branch 0")
@@ -209,7 +208,6 @@ function mutatePrice(priceHolder, target){
         return console.error("Same price mutated twice")
     }
     let price = priceHolder.innerText
-    // console.log("PRICE", price)
     let int = parseInt(price.replace(',','').match(/\d+/))
     if(price.includes('K')){ int *= 1000 }
     let exp = parseInt(Math.max(1, Math.log10(int)))
@@ -220,7 +218,6 @@ function mutatePrice(priceHolder, target){
 
 function mutateComment(node){
     // this is assuming we're at js-feed-post level
-    console.log("COMMENT", node)
 
     // starting from the div.js-feed-post go up two...
     // if we're on a /u/ page, this is the element we need to tag with exp
@@ -264,10 +261,6 @@ function mutateFollowers(node){
 }
 
 function mutateProfilePrice(node){
-    console.log("MUTATE PROFILE", node)
-    console.log("PRICE??",
-    node.firstElementChild.children[3].lastElementChild.querySelector('div').firstElementChild
-     )
     mutatePrice(
         // node.firstElementChild.children[3].lastElementChild.lastElementChild.firstElementChild
         // node.firstElementChild.children[3].lastElementChild.children[1].firstElementChild
@@ -283,7 +276,7 @@ function mutateInbox(node){
 function updateTitleText(){
     let suffix = " - BitClout"
     let [route, subroute] = location.pathname.split('/').slice(1)
-    console.log([route, subroute])
+    debug([route, subroute])
     switch(route){
         case 'inbox':
             if(!subroute) document.querySelector("messages-thread").firstChild.click()
