@@ -16,7 +16,7 @@ let defaults = {
   "mood": "dollar sign",
   "invert": false,
   "imgfix": true,
-  "norep": false,
+  "noreps": false,
   "nospam": true
 }
 // stuff an entire string of the names of all the keys 
