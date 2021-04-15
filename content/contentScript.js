@@ -48,6 +48,7 @@ new MutationObserver(mutationsList => {
     }
     mutationsList.map(mutation => {
         Array.from(mutation.addedNodes, function(node){
+            console.log(node)
             if(!node.classList || !node.parentElement)
             {
                 debug("branch 0")
@@ -200,11 +201,15 @@ function MoneyInWhatMood(price, int, exp){
 }
 
 
+
+
+
 function mutatePrice(priceHolder, target){
     debug("mutate price")
     debug(priceHolder)
-    if(!priceHolder) return console.error("no priceholder, skipping.")
-
+    if(!priceHolder || !priceHolder.getAttribute){
+        return console.error("no priceholder, skipping.")
+    }
     if(priceHolder.getAttribute("tag")){
         return console.error("Same price mutated twice")
     }
