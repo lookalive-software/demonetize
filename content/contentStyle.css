@@ -6,6 +6,25 @@
     object-fit: contain;
 }
 
+/* media tab gallery */
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .gallery img {
+    flex-grow: 1;
+    object-fit: cover;
+    margin: 1.2%;
+    height: 20vh;
+    max-width: 100%;
+    border-radius: 10px;
+    border: 1px solid #8080803b;
+  }
+  .gallery img:last-child {
+    flex-grow: 10;
+    border-color: transparent;
+  }
+
 /*
     Hide anything that has been assigned an exponential value
 */
