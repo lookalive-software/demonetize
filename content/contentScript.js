@@ -203,6 +203,7 @@ function MoneyInWhatMood(price, int, exp){
 function mutatePrice(priceHolder, target){
     debug("mutate price")
     debug(priceHolder)
+    if(!priceHolder) return console.error("no priceholder, skipping.")
 
     if(priceHolder.getAttribute("tag")){
         return console.error("Same price mutated twice")
@@ -238,23 +239,29 @@ function mutateComment(node){
         commentContainer = commentContainer.parentElement
     }
 
-    // we have identified a comment container, apply spam filter
     if(commentContainer && node.querySelectorAll('i.icon-repost').length === 3){
         commentContainer.classList.add("repost")
         if(node.querySelector('[tabindex]')
                .textContent
-               .toLowerCase()
-               .includes('reclout'))
+               .match(/re-?clout/i))
         {
             commentContainer.classList.add("spam")
         }
     }
 
     // maybe mutate price should just return {int, exp, price} and then I can decide what to do with it...
-    mutatePrice(
-        node.querySelector(".feed-post__coin-price-holder"),
-        commentContainer
-    )
+    let coinholder = node.querySelector(".feed-post__coin-price-holder")
+
+    if(!coinholder){
+        // so far the only time this happens is when a repost includes a deleted post
+        console.error("No coinholder", commentContainer)
+        commentContainer.style.display = "none"
+    } else {
+        mutatePrice(
+            coinholder,
+            commentContainer
+        )
+    }
 }
 
 // Profile : Posts | Creator Coin
