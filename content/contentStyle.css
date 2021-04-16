@@ -41,6 +41,12 @@
     display: block;
 }
 
+/* this is annoying, the element is overwritten when changing message thread */
+/* so the same price just sits on top. just hide it for now. */
+messages-thread-view [tag="price"] {
+    display: none;
+}
+
 /*
 Allow hiding the numbers by setting the font color of the container to transparent, 
 and color of the icon element back to initial
