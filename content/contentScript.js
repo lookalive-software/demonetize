@@ -48,7 +48,6 @@ new MutationObserver(mutationsList => {
     }
     mutationsList.map(mutation => {
         Array.from(mutation.addedNodes, function(node){
-            console.log(node)
             if(!node.classList || !node.parentElement)
             {
                 debug("branch 0")
@@ -116,31 +115,36 @@ new MutationObserver(mutationsList => {
                     mutateFollowers(node)
                 }
             }
-            else if(location.pathname.startsWith('/u/') && location.search.includes('creator-coin'))
+            else if(node.classList.contains('js-feed-post'))
+            {
+                debug("branch 10")
+                mutateComment(node)
+            }
+            else if(location.pathname.startsWith('/u/'))
             {
                 debug("branch 8..")
-                // ask for the text content of the node and find out if it ends with a price 
+                if(node.tagName == "SPAN")
+                {
+                    return null
+                }
+                // ask for the text content of the node and find out if it ends with a price
+                // could constrain to location search creator coin
                 if(node.classList && node.classList.contains('row') && endsWithPrice(node))
                 {
-                    debug("branch 8.1")
+                    debug("branch 8.2")
                     // OK, the node is the container row, the price is the lastChild
                     mutatePrice(node.lastElementChild)
                 }
-                else if(node.previousElementSibling && "TAB-SELECTOR" === node.previousElementSibling.tagName){
-                    debug("branch 8.2")
-                    mutatePrice(node.children[1].lastChild.lastChild.lastChild)
+                else if("TAB-SELECTOR" == node.parentNode.parentNode.tagName)
+                {
+                    debug("branch 8.3")
+                    node.textContent.trim() == "Creator Coin" && node.insertAdjacentElement('afterEnd', renderMediaTab())
                 }
-            }
-            // well it wasn't anything else, check if its the search bar
-            // else if(node.parentNode
-            //     && node.parentNode.parentNode 
-            //     && /search-bar__results-dropdown/.test(node.parentNode.parentNode.className))
-            //     { mutatePrice(node.lastElementChild) }
-
-            else if(node.classList.contains('js-feed-post'))
-            {
-                debug("branch 9")
-                mutateComment(node)
+                else
+                {
+                    // debug("branch 8.?")
+                    // console.warn(node)
+                }
             }
             // if(/modal-container/i.test(node.tagName)){ mutateComment(node)}
             // else if(node.classList.contains("modal-backdrop"))

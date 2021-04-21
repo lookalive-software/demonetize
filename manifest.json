@@ -1,7 +1,7 @@
  {
     "name": "Demonetize",
     "description": "Customize your BitClout experience -- price display, comment filtering, etc",
-    "version": "0.2.1",
+    "version": "0.3.0",
     "author": "@cdj",
     "manifest_version": 3,
     "background": {
@@ -28,7 +28,7 @@
         {
             "matches": ["https://bitclout.com/*"],
             "run_at": "document_idle",
-            "js": ["content/contentScript.js"],
+            "js": ["content/kvetch.js","content/mutateMedia.js","content/contentScript.js"],
             "css" : ["content/contentStyle.css"]
         }
     ]

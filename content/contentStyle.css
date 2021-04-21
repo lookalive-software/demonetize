@@ -7,23 +7,76 @@
 }
 
 /* media tab gallery */
+
 .gallery {
     display: flex;
     flex-wrap: wrap;
-  }
-  .gallery img {
+}
+.gallery img {
     flex-grow: 1;
     object-fit: cover;
     margin: 1.2%;
     height: 20vh;
-    max-width: 100%;
+    max-width: 97.6%;
     border-radius: 10px;
     border: 1px solid #8080803b;
-  }
-  .gallery img:last-child {
+}
+.gallery img[loading="lazy"] {
+    /* before the image is done loading, hide and take up space */
+    margin: 0;
+    width: 0;
+    opacity: 0;
+    flex-grow: 0;
+    /* loading attribute is updated to complete to reveal */
+}
+
+.gallery img:last-child {
     flex-grow: 10;
     border-color: transparent;
-  }
+}
+
+.gallery > div {
+    display: none;
+}
+
+simple-center-loader {
+    width: 100%;
+}
+simple-center-loader .lds-default {
+    display:inline-block;
+    position:relative;
+    width:80px;
+    height:80px;
+}
+simple-center-loader .lds-default div {
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:grey;
+    border-radius:50%;
+    animation: lds-default 1.2s linear infinite;
+}
+
+simple-center-loader .lds-default  div:first-child{animation-delay:0s;top:37px;left:66px;}
+simple-center-loader .lds-default  div:nth-child(2){animation-delay:-.1s;top:22px;left:62px;}
+simple-center-loader .lds-default  div:nth-child(3){animation-delay:-.2s;top:11px;left:52px;}
+simple-center-loader .lds-default  div:nth-child(4){animation-delay:-.3s;top:7px;left:37px;}
+simple-center-loader .lds-default  div:nth-child(5){animation-delay:-.4s;top:11px;left:22px;}
+simple-center-loader .lds-default  div:nth-child(6){animation-delay:-.5s;top:22px;left:11px;}
+simple-center-loader .lds-default  div:nth-child(7){animation-delay:-.6s;top:37px;left:7px;}
+simple-center-loader .lds-default  div:nth-child(8){animation-delay:-.7s;top:52px;left:11px;}
+simple-center-loader .lds-default  div:nth-child(9){animation-delay:-.8s;top:62px;left:22px;}
+simple-center-loader .lds-default  div:nth-child(10){animation-delay:-.9s;top:66px;left:37px;}
+simple-center-loader .lds-default  div:nth-child(11){animation-delay:-1s;top:62px;left:52px;}
+simple-center-loader .lds-default  div:nth-child(12){animation-delay:-1.1s;top:52px;left:62px;}
+
+/* caption modal */
+figure {
+    margin: 0px !important;
+}
+figcaption {
+    text-align: center;
+}
 
 /*
     Hide anything that has been assigned an exponential value
