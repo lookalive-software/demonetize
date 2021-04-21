@@ -58,10 +58,10 @@ But now, BitClout takes this signal of comparison and puts it at the core of the
 
 ### Privacy Policy
 
-Demonetize does not collect any personal data, user activity, or statistics and makes no network requests to any party. Demonetize uses the Chrome WebExtensions Storage Sync API for storing user preferences and communicating preferences between the extension's popup menu and the extension's injected JavaScript.
+Demonetize does not collect any personal data, user activity, or statistics and makes no network requests outside of replaying API requests to the `bitclout.com` domain. Demonetize uses the Chrome WebExtensions Storage Sync API for storing user preferences and communicating preferences between the extension's popup menu and the extension's injected JavaScript.
 
 ### Security Disclaimer
 
-While Demonetize never captures data from `BitClout.com`, and does not make any network requests, it is a security risk to allow any extension access to your web browsing. When logging into `BitClout.com` with your mnemonic seed phrase, you should disable any untrusted extension. Once you've logged in, the seed phrase cannot be recovered by injected JavaScript.
+While Demonetize never captures data from `BitClout.com`, and does not make any network requests to third parties, it is a security risk to allow any extension access to your web browsing. When logging into `BitClout.com` with your mnemonic seed phrase, you should disable any untrusted extension. Once you've logged in, the seed phrase cannot be recovered by injected JavaScript.
 
 Demonetize is authored by Colten Jackson and is not in any way affiliated with `BitClout.com`
