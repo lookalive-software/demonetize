@@ -22,12 +22,8 @@ function mutateMedia(Username){
 	let spinner = renderSpinner()
 	container.insertAdjacentElement("afterBegin", spinner)
 
-    let {SenderPublicKeyBase58Check} = Object.entries(
-        JSON.parse(localStorage.messageMetaKey)
-        .decryptedMessgesMap
-    ).pop().pop()
-
-	
+    let SenderPublicKeyBase58Check = JSON.parse(localStorage.lastLoggedInUser)
+    
     kvetch.post(
         "https://api.bitclout.com/get-profiles",
         null,
